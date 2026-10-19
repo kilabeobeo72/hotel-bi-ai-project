@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+mage_data/
+lab_project/dbt/hotel_dw/target/
+lab_project/dbt/hotel_dw/dbt_packages/
+lab_project/dbt/hotel_dw/logs/
+data/*.csv
+!data/sample_hotel_bookings.csv
