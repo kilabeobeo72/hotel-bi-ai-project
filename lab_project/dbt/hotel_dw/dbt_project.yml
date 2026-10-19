@@ -1,0 +1,25 @@
+name: 'hotel_dw'
+version: '1.0.0'
+config-version: 2
+
+profile: 'hotel_dw'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  hotel_dw:
+    staging:
+      +materialized: view
+      +schema: stage
+    marts:
+      +materialized: table
+      +schema: dds

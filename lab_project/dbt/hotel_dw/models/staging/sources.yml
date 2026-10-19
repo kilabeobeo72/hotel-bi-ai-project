@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: stage
+    description: "Vùng Staging chứa dữ liệu đặt phòng khách sạn nạp từ Mage.ai"
+    schema: stage
+    tables:
+      - name: raw_hotel_bookings
+        description: "Bảng dữ liệu đặt phòng khách sạn thô (32 cột gốc từ Kaggle + metadata)"
