@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>BI mini project schedule - Google Docs Ready</title>
+<style>
+  body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 0; }
+  .topbar { background: #1e3a8a; color: #fff; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .topbar h1 { margin: 0; font-size: 20px; }
+  .tabs { display: flex; gap: 8px; background: #e2e8f0; padding: 12px 32px 0; border-bottom: 2px solid #cbd5e1; }
+  .tab-btn { padding: 10px 18px; border: none; background: #cbd5e1; color: #334155; font-weight: 600; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 14px; }
+  .tab-btn.active { background: #ffffff; color: #1d4ed8; border-top: 3px solid #1d4ed8; }
+  .container { max-width: 1100px; margin: 24px auto; background: #ffffff; padding: 40px 56px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  h1 { color: #1e3a8a; border-bottom: 2px solid #dbeafe; padding-bottom: 8px; }
+  h2 { color: #1d4ed8; margin-top: 28px; }
+  h3 { color: #0f172a; margin-top: 20px; }
+  blockquote { background: #eff6ff; border-left: 4px solid #2563eb; margin: 12px 0; padding: 10px 16px; color: #1e40af; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th { background: #1e3a8a; color: #ffffff; text-align: left; padding: 10px 12px; border: 1px solid #cbd5e1; }
+  td { padding: 10px 12px; border: 1px solid #cbd5e1; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace; font-size: 13px; color: #b91c1c; }
+  pre { background: #0f172a; color: #f8fafc; padding: 14px; border-radius: 6px; overflow-x: auto; }
+  pre code { background: transparent; color: inherit; }
+  .copy-btn { background: #10b981; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>📄 BI mini project schedule (1 Master Doc + 3 Side Docs theo Seminar 1, 2, 3)</h1>
+    <button class="copy-btn" onclick="copyCurrentTab()">📋 Copy Tab hiện tại để dán vào Google Docs</button>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('master', this)">📋 Master: Tổng Quan & Điều Phối</button><button class="tab-btn " onclick="showTab('sem1', this)">📘 Side Doc 1: Seminar 1 (25/10 - ETL & DW)</button><button class="tab-btn " onclick="showTab('sem2', this)">📗 Side Doc 2: Seminar 2 (05/11 - Power BI)</button><button class="tab-btn " onclick="showTab('sem3', this)">📙 Side Doc 3: Seminar 3 (14/11 - Lập lịch, Monitor & AI)</button>
+  </div>
+  <div class="container">
+    <div id="master" class="tab-pane active"><h1>📋 BI MINI PROJECT SCHEDULE (TÀI LIỆU TỔNG QUAN & ĐIỀU PHỐI)</h1>
+<blockquote><strong>Đề tài:</strong> Xây dựng Hệ thống Business Intelligence Tích hợp Generative AI phân tích Nhu cầu Đặt phòng, Doanh thu & Nguyên nhân Hủy phòng Khách sạn (<em>Hotel Booking Demand Analytics & AI Assistant</em>)</blockquote>
+<blockquote><strong>Repository GitHub chính thức:</strong> <a href="https://github.com/kilabeobeo72/hotel-bi-ai-project" target="_blank">https://github.com/kilabeobeo72/hotel-bi-ai-project</a></blockquote>
+<blockquote><strong>Dataset Kaggle:</strong> <a href="https://www.kaggle.com/datasets/jessemostipak/hotel-booking-demand" target="_blank">Hotel Booking Demand (32 cột, 119.390 dòng)</a></blockquote>
+<hr/>
+<h2>1. DANH SÁCH THÀNH VIÊN & VAI TRÒ XUYÊN SUỐT</h2>
+<p>Nhóm gồm <strong>04 thành viên</strong>, mỗi thành viên phụ trách trọn vẹn một nhánh công việc trong từng giai đoạn Seminar (đảm bảo <strong>ai cũng tham gia viết Code + viết Báo cáo</strong>, không bị phụ thuộc/chờ đợi nhau):</p>
+<table><thead><tr>
+<th>STT</th>
+<th>Họ và Tên</th>
+<th>Vai trò định hướng</th>
+<th>Nhánh phụ trách ở Seminar 1 (25/10)</th>
+<th>Nhánh phụ trách ở Seminar 2 (05/11)</th>
+<th>Nhánh phụ trách ở Seminar 3 (14/11)</th>
+</tr></thead><tbody>
+<tr>
+<td>:-:</td>
+<td>:---</td>
+<td>:---</td>
+<td>:---</td>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td><strong>1</strong></td>
+<td><strong>Đào Trung Kiên</strong> *(Nhóm trưởng)*</td>
+<td>Kiến trúc sư DW & Backend</td>
+<td>Hạ tầng Docker, Schema DB & <code>dbt</code> Staging (<code>stg_hotel_bookings</code>)</td>
+<td>Power BI Semantic Model, Relationships, Hierarchies & 12 DAX Measures</td>
+<td>Backend GenAI (Gemini API, Prompt chống bịa số liệu từ DW)</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td><strong>Huỳnh Võ Đại Dương</strong></td>
+<td>Kỹ sư Data Ingestion & ETL</td>
+<td>Mage.ai Pipeline (Full Load & Incremental Load) + Cắt Batch CSV</td>
+<td>Power BI Dashboard 2 – Detailed / Diagnostic Analytics (Drill-through)</td>
+<td>Lập lịch ETL tự động (Mage Schedules/Triggers) & Giả lập kịch bản lỗi</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td><strong>Phạm Ngọc Thanh</strong></td>
+<td>Kỹ sư Dimensional Model & BI</td>
+<td><code>dbt</code> Marts (5 bảng <code>dim_*</code> & 1 bảng <code>fact_bookings</code>) + Sơ đồ Star Schema</td>
+<td>Power BI Dashboard 1 – Overview (Descriptive Analytics)</td>
+<td>Power BI Dashboard 3 – Giám sát/Theo dõi kết quả mỗi lần chạy ETL</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td><strong>Thạch Ý</strong></td>
+<td>Kỹ sư Data Quality, AI App & QA</td>
+<td>Bảng Log <code>control.etl_batch_log</code>, <code>dbt test</code> & <code>dbt docs</code> Lineage</td>
+<td>Tổng hợp Báo cáo Phân tích PDF & Kịch bản/Dựng Video Demo GĐ2</td>
+<td>Giao diện Web AI Assistant (Streamlit + Hỏi đáp NL2SQL) & Video Cuối kỳ</td>
+</tr>
+</tbody></table>
+<hr/>
+<h2>2. LỘ TRÌNH 3 GIAI ĐOẠN (3 SIDE DOCS CHI TIẾT)</h2>
+<p>Để tránh khủng hoảng vì ôm đồm toàn bộ yêu cầu cùng lúc, dự án được chia làm <strong>3 Giai đoạn tương ứng với 3 buổi Seminar</strong> trên lớp. Mỗi giai đoạn có <strong>01 Side Doc</strong> riêng biệt:</p>
+<ul>
+<li>📘 <strong><a href="./01_SideDoc_Seminar1_25Oct_ETL_DW.md" target="_blank">SIDE DOC 1: Giai đoạn Seminar 1 (Hạn 25/10 – Trình bày 27/10/2026)</a></strong></li>
+<li><strong>Trọng tâm:</strong> <em>Modeling & Nạp dữ liệu từ Source vào Kho dữ liệu (<code>stage</code> $\rightarrow$ <code>dds</code> & <code>control</code>)</em>.</li>
+<li><strong>Sản phẩm bàn giao:</strong> Thiết kế Star Schema, Pipeline Mage.ai (Full/Incremental + Audit Log), Models & Tests trên <code>dbt</code>, Báo cáo Giai đoạn 1.</li>
+<li>📗 <strong><a href="./02_SideDoc_Seminar2_05Nov_PowerBI.md" target="_blank">SIDE DOC 2: Giai đoạn Seminar 2 (Hạn 05/11/2026)</a></strong></li>
+<li><strong>Trọng tâm:</strong> <em>Xây dựng ứng dụng BI trên Kho dữ liệu (<code>dds</code> $\rightarrow$ Power BI Semantic Model + Dashboard Overview & Diagnostic)</em>.</li>
+<li><strong>Sản phẩm bàn giao:</strong> File <code>Hotel_BI_Dashboard.pbix</code>, Báo cáo phân tích chuyên sâu & Video Demo Giai đoạn 2.</li>
+<li>📙 <strong><a href="./03_SideDoc_Seminar3_14Nov_Schedule_Monitor_AI.md" target="_blank">SIDE DOC 3: Giai đoạn Seminar 3 (Hạn 14/11/2026)</a></strong></li>
+<li><strong>Trọng tâm:</strong> <em>Lập lịch ETL tự động, Dashboard giám sát kết quả mỗi lần ETL (<code>control</code>), và Giải thích kết quả phân tích bằng Generative AI</em>.</li>
+<li><strong>Sản phẩm bàn giao:</strong> Trigger lập lịch trên Mage.ai, Dashboard ETL Monitoring, Ứng dụng AI Assistant (Tóm tắt KPI + Giải thích biến động + Hỏi đáp tự nhiên), Báo cáo & Video Demo hoàn chỉnh.</li>
+</ul>
+<hr/>
+<h2>3. THÔNG TIN DATASET & BÀI TOÁN NGHIỆP VỤ (CHỐT CHUNG CHO CẢ NHÓM)</h2>
+<h3>3.1. Nguồn dữ liệu Kaggle</h3>
+<ul>
+<li><strong>Tên bộ dữ liệu:</strong> Hotel Booking Demand</li>
+<li><strong>URL:</strong> <code>https://www.kaggle.com/datasets/jessemostipak/hotel-booking-demand</code></li>
+<li><strong>Mô tả:</strong> Chứa <strong>119.390 bản ghi</strong> đặt phòng của 2 loại hình khách sạn (<strong>Resort Hotel</strong> và <strong>City Hotel</strong>) trong giai đoạn <strong>2015 – 2017</strong>, bao gồm <strong>32 cột</strong> thuộc tính.</li>
+<li><strong>Lý do chọn (Khác biệt & Giàu chiều phân tích):</strong></li>
+<li>Không trùng lặp với các bài toán bán hàng siêu thị (Superstore/E-commerce) phổ biến.</li>
+<li>Có đầy đủ chiều Thời gian (<code>arrival_date_year/month/day</code>, <code>reservation_status_date</code>), Địa điểm (<code>country</code>), Đối tượng khách (<code>customer_type</code>, <code>is_repeated_guest</code>, <code>adults/children/babies</code>), Kênh phân phối (<code>market_segment</code>, <code>distribution_channel</code>, <code>agent</code>), Chính sách phòng & đặt cọc (<code>reserved_room_type</code>, <code>assigned_room_type</code>, <code>deposit_type</code>, <code>meal</code>).</li>
+<li>Có <strong>vấn đề nghiệp vụ cực kỳ rõ nét</strong> để làm Diagnostic Analytics & AI: <strong>Tỷ lệ hủy phòng (Cancellation Rate) trung bình lên tới ~37%</strong>, gây thất thoát doanh thu lớn, đặc biệt biến động mạnh theo kênh <em>Online TA</em>, thời gian đặt trước (<em>Lead Time</em>) và chính sách đặt cọc (<em>Deposit Type</em>).</li>
+</ul>
+<h3>3.2. Ba tầng Schema trong PostgreSQL Data Warehouse (Kế thừa chuẩn <code>01_mage_demo_01</code>)</h3>
+<p>Hệ thống chạy trên Docker gồm 2 container <code>lab-postgres</code> (PostgreSQL 17, port <code>5432</code>) và <code>lab-mage</code> (Mage.ai + dbt, port <code>6789</code>) với 3 schema:</p>
+<ul>
+<li><strong><code>stage</code></strong>: Chứa bảng <code>stage.raw_hotel_bookings</code> do Mage.ai nạp từ các file CSV batch.</li>
+<li><strong><code>dds</code> (Dimensional Data Store)</strong>: Chứa lược đồ hình sao (Star Schema) gồm 1 bảng Fact và 5 bảng Dimension do <strong>dbt</strong> xây dựng:</li>
+<li><code>dds.fact_bookings</code> <em>(Grain: 1 dòng = 1 đơn đặt phòng <code>booking_id</code>)</em></li>
+<li><code>dds.dim_date</code> <em>(Chiều thời gian)</em></li>
+<li><code>dds.dim_hotel</code> <em>(Chiều khách sạn: Resort Hotel / City Hotel)</em></li>
+<li><code>dds.dim_customer</code> <em>(Chiều khách hàng: Quốc tịch, Loại khách, Khách quay lại)</em></li>
+<li><code>dds.dim_channel</code> <em>(Chiều kênh bán: Market Segment, Distribution Channel, Agent, Company)</em></li>
+<li><code>dds.dim_room_policy</code> <em>(Chiều chính sách phòng: Loại phòng đặt/nhận, Gói ăn, Loại đặt cọc)</em></li>
+<li><strong><code>control</code></strong>: Chứa bảng <code>control.etl_batch_log</code> lưu trạng thái thực thi của từng lần chạy pipeline Mage.ai (Thời gian chạy, tên batch, kiểu nạp Full/Incremental, số dòng đọc/ghi, trạng thái <code>SUCCESS</code>/<code>FAILED</code>, thông báo lỗi).</li>
+</ul>
+<hr/>
+<h2>4. QUY ƯỚC LÀM VIỆC TRÊN GITHUB CHO 4 THÀNH VIÊN</h2>
+<ul>
+<li><strong>Clone dự án về máy:</strong></li>
+<pre><code>
+   git clone https://github.com/kilabeobeo72/hotel-bi-ai-project.git
+   cd hotel-bi-ai-project
+   cp .env.example .env
+   docker compose up -d --build
+</code></pre>
+<li><strong>Chia nhánh Git (Branch) để không đụng code nhau:</strong></li>
+<li>Đào Trung Kiên: nhánh <code>feat/kien-dw-dbt-ai</code></li>
+<li>Huỳnh Võ Đại Dương: nhánh <code>feat/duong-mage-etl</code></li>
+<li>Phạm Ngọc Thanh: nhánh <code>feat/thanh-marts-powerbi</code></li>
+<li>Thạch Ý: nhánh <code>feat/y-control-test-app</code></li>
+<li><strong>Quy tắc Merge:</strong> Cuối mỗi cột mốc, các thành viên tạo Pull Request (PR) vào nhánh <code>main</code>. Nhóm trưởng (Kiên) kiểm tra chạy thử <code>docker compose</code> và merge.</li>
+</ul></div><div id="sem1" class="tab-pane "><h1>📘 SIDE DOC 1: KẾ HOẠCH GIAI ĐOẠN 1 – SEMINAR 1 (25/10 – 27/10/2026)</h1>
+<blockquote><strong>Chủ đề Seminar 1 (Tuần 7):</strong> <em>Modeling & Nạp dữ liệu từ [Source] vào Kho dữ liệu (Data Ingestion + dbt Transformation + Star Schema DW)</em></blockquote>
+<blockquote><strong>Hạn chót nội bộ nhóm:</strong> <strong>23:59 Ngày 25/10/2026</strong> (Chuẩn bị sẵn sàng cho buổi gọi ngẫu nhiên ngày <strong>27/10/2026</strong>)</blockquote>
+<blockquote><strong>Phạm vi yêu cầu đề bài giải quyết trong Giai đoạn 1:</strong> Mục <strong>2</strong>, <strong>3.1</strong> (Mage.ai Ingestion), <strong>3.2</strong> (dbt Transformation & Tests), <strong>3.3</strong> (Data Warehouse Star Schema).</blockquote>
+<hr/>
+<h2>1. MỤC TIÊU CỐT LÕI CỦA GIAI ĐOẠN 1 (7 NGÀY: 19/10 – 25/10)</h2>
+<p>Khi giảng viên gọi tên nhóm trong buổi <strong>Seminar 1 (27/10)</strong>, nhóm phải trình diễn (live demo hoặc video/slide) được trọn vẹn 4 điểm sau:</p>
+<ul>
+<li><strong>Bài toán & Thiết kế Dimensional Model (Star Schema):</strong> Giải thích được tại sao chọn bộ dữ liệu <em>Hotel Booking Demand (32 cột)</em>, xác định đúng <strong>Grain</strong> của bảng Fact, và chiếu sơ đồ <strong>Star Schema</strong> gồm <code>dds.fact_bookings</code> nối với 5 bảng <code>dds.dim_*</code>.</li>
+<li><strong>Data Ingestion bằng Mage.ai vào vùng <code>stage</code>:</strong></li>
+<li>Chạy thử nạp <strong>Full Load</strong> (<code>batch_01_full_2015_2016.csv</code> ~ 79.000 dòng) và <strong>Incremental Load</strong> (<code>batch_02_inc_2017_H1.csv</code>, <code>batch_03_inc_2017_H2.csv</code> ~ 40.000 dòng).</li>
+<li>Có block kiểm tra chất lượng dữ liệu cơ bản (<code>validate_hotel_data.py</code>).</li>
+<li>Ghi nhận trạng thái thực thi, số lượng bản ghi xử lý và lỗi phát sinh vào bảng <code>control.etl_batch_log</code>.</li>
+<li><strong>Data Transformation bằng dbt từ <code>stage</code> sang <code>dds</code>:</strong></li>
+<li>Chạy lệnh <code>dbt run</code> tạo ra bảng làm sạch <code>stg_hotel_bookings</code> và 6 bảng kho dữ liệu (<code>dim_date</code>, <code>dim_hotel</code>, <code>dim_customer</code>, <code>dim_channel</code>, <code>dim_room_policy</code>, <code>fact_bookings</code>).</li>
+<li>Chạy lệnh <code>dbt test</code> pass 100% các ràng buộc khóa chính (<code>unique</code>, <code>not_null</code>), khóa ngoại (<code>relationships</code>) và miền giá trị (<code>accepted_values</code>).</li>
+<li>Mở giao diện <code>dbt docs</code> chiếu sơ đồ <strong>Lineage Graph (DAG)</strong> thể hiện quan hệ phụ thuộc rõ ràng từ <code>source</code> $\rightarrow$ <code>staging</code> $\rightarrow$ <code>marts (dds)</code>.</li>
+</ul>
+<hr/>
+<h2>2. PHÂN CÔNG THEO HẠNG MỤC CÔNG VIỆC (KHÔNG CHỜ ĐỢI NHAU)</h2>
+<p>Để không ai phải chờ người khác làm xong mới bắt đầu, <strong>ngay trong tối Ngày 1 (19/10)</strong>, cả nhóm sử dụng chung <strong>"Hợp đồng tên bảng & cột (Data Contract)"</strong> đã được khởi tạo sẵn trong GitHub Repo.</p>
+<h3>HẠNG MỤC 1.1: Thiết lập Hạ tầng Docker, Schema Database & dbt Staging</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Đào Trung Kiên</strong> <em>(Nhóm trưởng)</em></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 19/10 – 22/10/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Code):</strong></li>
+<li>Khởi tạo và kiểm tra <code>compose.yaml</code> + <code>Dockerfile</code> chạy ổn định PostgreSQL 17 (<code>port 5432</code>) và Mage.ai (<code>port 6789</code>) kèm thư viện <code>dbt-postgres</code>.</li>
+<li>Hoàn thiện file <code>postgres/init/01_init.sql</code> tự động tạo 3 schema: <code>stage</code>, <code>dds</code>, <code>control</code> và bảng <code>stage.raw_hotel_bookings</code> (để Thanh và Ý có thể test SQL ngay lập tức mà không cần đợi Dương chạy xong Mage).</li>
+<li>Khởi tạo project dbt tại <code>lab_project/dbt/hotel_dw/</code> (<code>dbt_project.yml</code>, <code>profiles.yml</code>, <code>sources.yml</code>).</li>
+<li>Viết model làm sạch <code>models/staging/stg_hotel_bookings.sql</code>:</li>
+<li>Sinh khóa định danh <code>booking_id</code> (MD5/hash hoặc row_number kết hợp các thuộc tính giao dịch).</li>
+<li>Xử lý giá trị <code>NULL</code> hoặc chuỗi <code>'NULL'</code> trong CSV gốc (cột <code>children</code> $\rightarrow$ <code>0</code>, <code>country</code> $\rightarrow$ <code>'UNK'</code>, <code>agent</code> $\rightarrow$ <code>'No Agent'</code>, <code>company</code> $\rightarrow$ <code>'No Company'</code>).</li>
+<li>Ghép 3 cột <code>arrival_date_year</code>, <code>arrival_date_month</code>, <code>arrival_date_day_of_month</code> thành cột kiểu <code>DATE</code> chuẩn <code>arrival_date</code>.</li>
+<li>Loại bỏ các bản ghi vô lý (ví dụ: <code>adults + children + babies = 0</code> hoặc <code>adr < 0</code>).</li>
+<li><strong>Nhiệm vụ Tài liệu (Document):</strong></li>
+<li>Viết <strong>Chương 1 (Kiến trúc Hệ thống tổng thể)</strong> và <strong>Chương 3 – Mục 3.2.1 (Chuẩn hóa & Làm sạch dữ liệu tầng Staging)</strong> trong file Báo cáo.</li>
+</ul>
+<hr/>
+<h3>HẠNG MỤC 1.2: Cắt Batch Dữ Liệu & Xây Dựng Pipeline Data Ingestion trên Mage.ai</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Huỳnh Võ Đại Dương</strong></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 20/10 – 23/10/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Code):</strong></li>
+<li>Tải file <code>hotel_bookings.csv</code> từ Kaggle bỏ vào thư mục <code>data/</code>, chạy và tinh chỉnh script <code>data/split_batches.py</code> để tách thành 4 file giả lập thực tế:</li>
+<li><code>batch_01_full_2015_2016.csv</code>: Dữ liệu lịch sử năm 2015 & 2016 (Dùng cho <strong>Full Load</strong>).</li>
+<li><code>batch_02_inc_2017_Q1_Q2.csv</code>: Dữ liệu nửa đầu năm 2017 (Dùng cho <strong>Incremental Load</strong> lần 1).</li>
+<li><code>batch_03_inc_2017_Q3.csv</code>: Dữ liệu quý 3 năm 2017 (Dùng cho <strong>Incremental Load</strong> lần 2 + test cập nhật bản ghi trùng).</li>
+<li><code>batch_04_corrupted_test.csv</code>: File có vài dòng lỗi (ví dụ thiếu cột bắt buộc hoặc <code>adr</code> âm) để demo khả năng bắt lỗi của pipeline.</li>
+<li>Xây dựng Pipeline <code>hotel_ingestion_pipeline</code> trên Mage.ai gồm các block:</li>
+<li><strong>Data Loader (<code>load_hotel_csv.py</code>):</strong> Đọc file CSV từ biến runtime <code>batch_file</code> và <code>load_mode</code> (<code>full</code> hoặc <code>incremental</code>), gắn thêm cột metadata <code>batch_file</code>, <code>ingested_at</code>, <code>record_hash</code>.</li>
+<li><strong>Transformer (<code>validate_hotel_data.py</code>):</strong> Kiểm tra danh sách 32 cột bắt buộc, ép kiểu số (<code>lead_time</code>, <code>adr</code>, <code>is_canceled</code>), lọc/báo lỗi nếu vi phạm quy tắc cơ bản.</li>
+<li><strong>Data Exporter (<code>load_stage_hotel.py</code>):</strong> Nạp vào bảng <code>stage.raw_hotel_bookings</code>. Nếu <code>load_mode == 'full'</code> thì <code>replace</code>/<code>truncate</code>, nếu <code>load_mode == 'incremental'</code> thì <code>append</code> có kiểm tra chống trùng theo <code>record_hash</code> (<code>unique_conflict_method='UPDATE'</code>).</li>
+<li><strong>Nhiệm vụ Tài liệu (Document):</strong></li>
+<li>Viết <strong>Chương 3 – Mục 3.1 (Thiết kế Pipeline Data Ingestion với Mage.ai: Full Load, Incremental Load & Validation)</strong> kèm ảnh chụp màn hình cây Pipeline trên Mage.ai.</li>
+</ul>
+<hr/>
+<h3>HẠNG MỤC 1.3: Thiết kế Star Schema & Xây dựng các mô hình Fact/Dimension bằng dbt</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Phạm Ngọc Thanh</strong></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 20/10 – 23/10/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Code):</strong></li>
+<li>Vẽ sơ đồ <strong>Star Schema (ERD)</strong> của tầng <code>dds</code> (sử dụng <code>dbdiagram.io</code> hoặc <code>draw.io</code>).</li>
+<li>Viết 6 file SQL trong thư mục <code>lab_project/dbt/hotel_dw/models/marts/</code> để đẩy dữ liệu vào schema <code>dds</code>:</li>
+<li><code>dim_date.sql</code>: Tạo bảng chiều thời gian đầy đủ từ năm 2014 đến 2018 (<code>date_key</code>, <code>full_date</code>, <code>year</code>, <code>quarter</code>, <code>month</code>, <code>month_name</code>, <code>week_of_year</code>, <code>day_of_week</code>, <code>is_weekend</code>).</li>
+<li><code>dim_hotel.sql</code>: <code>hotel_key</code>, <code>hotel_name</code>, <code>hotel_category</code>.</li>
+<li><code>dim_customer.sql</code>: <code>customer_key</code>, <code>country_code</code>, <code>customer_type</code>, <code>is_repeated_guest</code>, <code>guest_group_type</code> (Solo, Couple, Family, Group).</li>
+<li><code>dim_channel.sql</code>: <code>channel_key</code>, <code>market_segment</code>, <code>distribution_channel</code>, <code>agent_code</code>, <code>company_code</code>.</li>
+<li><code>dim_room_policy.sql</code>: <code>policy_key</code>, <code>reserved_room_type</code>, <code>assigned_room_type</code>, <code>is_room_upgraded</code> (<code>reserved != assigned</code>), <code>meal_code</code>, <code>meal_description</code>, <code>deposit_type</code>.</li>
+<li><code>fact_bookings.sql</code>: Kết nối (JOIN) <code>stg_hotel_bookings</code> với 5 bảng <code>dim_<em></code> qua các Surrogate Key (<code>hotel_key</code>, <code>customer_key</code>, <code>channel_key</code>, <code>policy_key</code>, <code>arrival_date_key</code>, <code>status_date_key</code>) và tính sẵn các Measures: <code>total_nights</code>, <code>total_guests</code>, <code>adr</code>, <code>gross_revenue</code> (<code>adr </em> total_nights</code>), <code>actual_revenue</code> (khi <code>is_canceled = 0</code>), <code>revenue_loss</code> (khi <code>is_canceled = 1</code>), <code>lead_time</code>, <code>is_canceled</code>, <code>booking_changes</code>, <code>total_of_special_requests</code>.</li>
+<li><strong>Nhiệm vụ Tài liệu (Document):</strong></li>
+<li>Viết <strong>Chương 2 (Mô tả Dataset Kaggle, Bối cảnh nghiệp vụ Khách sạn, Danh sách câu hỏi phân tích)</strong> và <strong>Chương 3 – Mục 3.3 (Thiết kế Kho dữ liệu đa chiều Star Schema: Quy trình nghiệp vụ, Grain, Bảng Fact & Dimension)</strong>.</li>
+</ul>
+<hr/>
+<h3>HẠNG MỤC 1.4: Cơ chế Ghi Log Thực Thi (<code>control</code>) & Kiểm định Chất lượng (<code>dbt test</code> + <code>dbt docs</code>)</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Thạch Ý</strong></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 20/10 – 24/10/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Code):</strong></li>
+<li>Thiết kế bảng <code>control.etl_batch_log</code> trong PostgreSQL và viết block/hàm Python <code>log_etl_execution.py</code> trên Mage.ai để mỗi lần chạy pipeline (dù <code>SUCCESS</code> hay <code>FAILED</code>), hệ thống đều ghi lại:</li>
+<li><code>run_id</code>, <code>pipeline_name</code>, <code>batch_file</code>, <code>load_mode</code> (<code>FULL</code> / <code>INCREMENTAL</code>), <code>rows_extracted</code>, <code>rows_valid</code>, <code>rows_rejected</code>, <code>status</code> (<code>SUCCESS</code> / <code>FAILED</code>), <code>error_message</code>, <code>started_at</code>, <code>completed_at</code>, <code>duration_seconds</code>.</li>
+<li>Viết file <code>models/marts/schema.yml</code> và <code>models/staging/stg_schema.yml</code> trong <code>dbt</code>:</li>
+<li>Thiết lập <code>dbt test</code> cho tất cả các bảng: <code>unique</code> & <code>not_null</code> cho mọi khóa chính (<code>booking_id</code>, <code>hotel_key</code>, <code>customer_key</code>, <code>channel_key</code>, <code>policy_key</code>, <code>date_key</code>).</li>
+<li>Thiết lập <code>relationships</code> kiểm tra toàn vẹn khóa ngoại từ <code>fact_bookings</code> sang 5 bảng <code>dim_*</code>.</li>
+<li>Thiết lập <code>accepted_values</code> cho <code>is_canceled</code> (<code>[0, 1]</code>), <code>hotel_name</code> (<code>['Resort Hotel', 'City Hotel']</code>), <code>deposit_type</code> (<code>['No Deposit', 'Non Refund', 'Refundable']</code>).</li>
+<li>Viết mô tả (<code>description</code>) tiếng Việt/Anh rõ ràng cho từng bảng và từng cột trong <code>schema.yml</code> để chạy <code>dbt docs generate</code> ra trang tài liệu Data Catalog hoàn chỉnh.</li>
+<li><strong>Nhiệm vụ Tài liệu (Document):</strong></li>
+<li>Viết <strong>Chương 3 – Mục 3.1.4 (Cơ chế Audit Log & Xử lý lỗi trong schema <code>control</code>)</strong>, <strong>Mục 3.2.2 (Kiểm tra chất lượng dữ liệu với dbt tests & Tài liệu hóa dbt docs)</strong>, và ghép toàn bộ bài viết của 4 thành viên thành bản <strong>Báo cáo Giai đoạn 1 + Slide thuyết trình Seminar 1</strong>.</li>
+</ul>
+<hr/>
+<h2>3. LỊCH TRÌNH 7 NGÀY CHI TIẾT CHO SEMINAR 1 (19/10 – 25/10/2026)</h2>
+<table><thead><tr>
+<th>Ngày</th>
+<th>Mốc công việc cụ thể</th>
+<th>Người thực hiện</th>
+<th>Kết quả đầu ra (Deliverable)</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Ngày 1</strong><br>*(19/10 - T2)*</td>
+<td>- Duyệt kế hoạch, clone GitHub Repo, tải <code>hotel_bookings.csv</code> từ Kaggle.<br>- Chạy thử <code>docker compose up -d</code> đảm bảo máy cả 4 người đều vào được Mage (<code>localhost:6789</code>) và Postgres (<code>localhost:5432</code>).</td>
+<td>Cả nhóm (Kiên hỗ trợ cài đặt)</td>
+<td>4 thành viên đều chạy được Docker & truy cập DB thành công.</td>
+</tr>
+<tr>
+<td><strong>Ngày 2</strong><br>*(20/10 - T3)*</td>
+<td>- <strong>Kiên:</strong> Hoàn tất <code>01_init.sql</code> và code xong <code>stg_hotel_bookings.sql</code>.<br>- <strong>Dương:</strong> Chạy script <code>split_batches.py</code> tạo 4 file CSV batch.<br>- <strong>Thanh:</strong> Vẽ xong sơ đồ Star Schema trên <code>dbdiagram.io</code>.<br>- <strong>Ý:</strong> Tạo bảng <code>control.etl_batch_log</code> và khung <code>schema.yml</code>.</td>
+<td>Kiên, Dương, Thanh, Ý</td>
+<td>Có sẵn dữ liệu mẫu trong <code>stage</code> và sơ đồ Star Schema chuẩn.</td>
+</tr>
+<tr>
+<td><strong>Ngày 3-4</strong><br>*(21-22/10)*</td>
+<td>- <strong>Dương:</strong> Code xong 3 block Mage.ai (Full Load & Incremental Load).<br>- <strong>Thanh:</strong> Code xong 5 bảng <code>dim_*</code> và 1 bảng <code>fact_bookings</code> trong <code>dbt</code>.<br>- <strong>Ý:</strong> Tích hợp hàm ghi log vào Mage.ai & viết xong toàn bộ <code>dbt test</code>.</td>
+<td>Dương, Thanh, Ý (Kiên review & ghép nối)</td>
+<td>Chạy thông mạch từ CSV $\rightarrow$ Mage (<code>stage</code> + <code>control</code>) $\rightarrow$ <code>dbt run</code> (<code>dds</code>).</td>
+</tr>
+<tr>
+<td><strong>Ngày 5</strong><br>*(23/10 - T6)*</td>
+<td>- Chạy kiểm thử toàn trình (End-to-End):<br>  1. Chạy Full Load Batch 1 $\rightarrow$ <code>dbt build</code>.<br>  2. Chạy Incremental Load Batch 2 & 3 $\rightarrow$ <code>dbt build</code>.<br>  3. Chạy thử Batch 4 (lỗi) $\rightarrow$ Kiểm tra <code>control.etl_batch_log</code> bắt được lỗi.<br>- Chạy <code>dbt docs generate</code> & chụp ảnh màn hình kết quả.</td>
+<td>Cả nhóm</td>
+<td>Bộ ảnh chụp màn hình Log, Database <code>dds</code>, <code>dbt test PASS</code>, <code>dbt docs DAG</code>.</td>
+</tr>
+<tr>
+<td><strong>Ngày 6</strong><br>*(24/10 - T7)*</td>
+<td>- Hoàn thiện các mục Báo cáo Giai đoạn 1 và làm Slide trình bày Seminar 1 (khoảng 12–15 slides ngắn gọn, nhiều hình kiến trúc & demo).</td>
+<td>Cả nhóm (Ý tổng hợp)</td>
+<td>File Báo cáo GĐ1 + Slide Seminar 1.</td>
+</tr>
+<tr>
+<td><strong>Ngày 7</strong><br>*(25/10 - CN)*</td>
+<td>- Họp nhóm 45 phút diễn tập chạy demo trực tiếp (phòng khi ngày 27/10 giảng viên gọi ngẫu nhiên bất kỳ ai trong nhóm cũng trả lời được).<br>- Đẩy toàn bộ code sạch lên nhánh <code>main</code> của GitHub.</td>
+<td>Cả nhóm</td>
+<td>Sẵn sàng 100% cho hạn 25/10 & Seminar 1 ngày 27/10.</td>
+</tr>
+</tbody></table></div><div id="sem2" class="tab-pane "><h1>📗 SIDE DOC 2: KẾ HOẠCH GIAI ĐOẠN 2 – SEMINAR 2 (28/10 – 05/11/2026)</h1>
+<blockquote><strong>Chủ đề Seminar 2 (05/11/2026):</strong> <em>Xây dựng ứng dụng BI trên Kho dữ liệu (<code>dds</code>), Nộp Báo cáo phân tích & Source, Video Demo & Trình bày sản phẩm</em></blockquote>
+<blockquote><strong>Thời gian thực hiện:</strong> <strong>28/10/2026 – 05/11/2026 (9 ngày)</strong></blockquote>
+<blockquote><strong>Phạm vi yêu cầu đề bài giải quyết trong Giai đoạn 2:</strong> Mục <strong>3.4.A (Semantic Model)</strong>, <strong>3.4.B (Dashboard 1 Overview & Dashboard 2 Diagnostic)</strong>, <strong>Mục 4 (Báo cáo phân tích, Source code, File <code>.pbix</code>, Video demo)</strong>.</blockquote>
+<hr/>
+<h2>1. MỤC TIÊU CỐT LÕI CỦA GIAI ĐOẠN 2</h2>
+<p>Sau khi đã có Kho dữ liệu chuẩn (<code>dds.fact_bookings</code> và 5 bảng <code>dds.dim_*</code>) từ Seminar 1, ở Giai đoạn 2 nhóm tập trung biến dữ liệu thành <strong>Insight quản trị cho Ban Giám đốc Khách sạn</strong>:</p>
+<ul>
+<li><strong>Xây dựng Semantic Model chuẩn trên Power BI Desktop:</strong> Kết nối trực tiếp vào PostgreSQL schema <code>dds</code>, thiết lập quan hệ Hình sao (1-nhiều), tạo các phân cấp (Hierarchies) và bộ <strong>12+ DAX Measures</strong>.</li>
+<li><strong>Xây dựng 02 trang Dashboard chuyên sâu:</strong></li>
+<li><strong>Dashboard 1 – Executive Overview (Descriptive Analytics):</strong> Toàn cảnh doanh thu, lượng đặt phòng, tỷ lệ hủy phòng, công suất đêm phòng theo thời gian, địa lý (quốc tịch khách), loại khách sạn và kênh bán.</li>
+<li><strong>Dashboard 2 – Cancellation & Revenue Loss Diagnostic (Diagnostic Analytics):</strong> Đi sâu (Drill-through / Drill-down) mổ xẻ <strong>nguyên nhân tại sao tỷ lệ hủy phòng lên tới 37%</strong> và gây mất hàng triệu USD doanh thu (chứng minh bằng số liệu định lượng: mối liên hệ giữa <em>Online TA</em>, <em>No Deposit</em>, <em>Lead Time dài</em>, và <em>Thay đổi loại phòng</em>).</li>
+<li><strong>Hoàn thiện Báo cáo phân tích & Quay Video Demo sản phẩm BI.</strong></li>
+</ul>
+<hr/>
+<h2>2. PHÂN CÔNG THEO HẠNG MỤC CÔNG VIỆC (SEMINAR 2)</h2>
+<h3>HẠNG MỤC 2.1: Xây dựng Power BI Semantic Model, Hierarchies & Bộ DAX Measures</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Đào Trung Kiên</strong> <em>(Nhóm trưởng)</em></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 28/10 – 30/10/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Code DAX & Data Modeling):</strong></li>
+<li>Kết nối Power BI Desktop vào PostgreSQL (<code>localhost:5432</code>, database <code>dw_lab</code>, schema <code>dds</code>), import 6 bảng (<code>fact_bookings</code>, <code>dim_date</code>, <code>dim_hotel</code>, <code>dim_customer</code>, <code>dim_channel</code>, <code>dim_room_policy</code>).</li>
+<li>Thiết lập <strong>Model View (Relationships):</strong></li>
+<li>Nối 1-nhiều (<code>1:<em></code>), chiều lọc đơn (<code>Single</code>) từ 5 bảng <code>dim_</em></code> vào <code>fact_bookings</code>.</li>
+<li>Đánh dấu <code>dim_date</code> là <strong>Date Table</strong> chuẩn để dùng các hàm Time Intelligence.</li>
+<li>Tạo <strong>03 Hierarchies</strong> phục vụ phân tích đa chiều (Drill-down):</li>
+<li><code>Date Hierarchy</code>: <code>year</code> $\rightarrow$ <code>quarter</code> $\rightarrow$ <code>month_name</code> $\rightarrow$ <code>full_date</code>.</li>
+<li><code>Channel Hierarchy</code>: <code>distribution_channel</code> $\rightarrow$ <code>market_segment</code> $\rightarrow$ <code>agent_code</code>.</li>
+<li><code>Room & Policy Hierarchy</code>: <code>deposit_type</code> $\rightarrow$ <code>meal_code</code> $\rightarrow$ <code>reserved_room_type</code>.</li>
+<li>Tạo bảng <code>_Measures</code> chứa <strong>12 DAX Measures cốt lõi</strong>:</li>
+<li><code>Total Bookings = COUNTROWS(fact_bookings)</code></li>
+<li><code>Canceled Bookings = CALCULATE([Total Bookings], fact_bookings[is_canceled] = 1)</code></li>
+<li><code>Completed Bookings = CALCULATE([Total Bookings], fact_bookings[is_canceled] = 0)</code></li>
+<li><code>Cancellation Rate % = DIVIDE([Canceled Bookings], [Total Bookings], 0)</code></li>
+<li><code>Total Room Nights = SUM(fact_bookings[total_nights])</code></li>
+<li><code>ADR (Average Daily Rate) = AVERAGE(fact_bookings[adr])</code></li>
+<li><code>Actual Revenue = SUM(fact_bookings[actual_revenue])</code> <em>(Doanh thu thực thu từ các đơn không hủy)</em></li>
+<li><code>Revenue Loss (Canceled) = SUM(fact_bookings[revenue_loss])</code> <em>(Doanh thu bị bốc hơi do khách hủy)</em></li>
+<li><code>Gross Potential Revenue = [Actual Revenue] + [Revenue Loss (Canceled)]</code></li>
+<li><code>Revenue YoY Growth %</code> (Tăng trưởng doanh thu cùng kỳ năm trước bằng <code>SAMEPERIODLASTYEAR</code>)</li>
+<li><code>Avg Lead Time (Days) = AVERAGE(fact_bookings[lead_time])</code></li>
+<li><code>Room Upgrade Rate % = DIVIDE(CALCULATE([Total Bookings], dim_room_policy[is_room_upgraded] = TRUE()), [Total Bookings], 0)</code></li>
+<li><strong>Nhiệm vụ Tài liệu (Document):</strong></li>
+<li>Viết <strong>Mục 3.4.A (Thiết kế Semantic Model, Relationships, Hierarchies và Giải thích công thức DAX)</strong> trong Báo cáo phân tích.</li>
+</ul>
+<hr/>
+<h3>HẠNG MỤC 2.2: Thiết kế Dashboard 1 – Overview (Descriptive Analytics)</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Phạm Ngọc Thanh</strong></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 30/10 – 02/11/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Power BI Visuals):</strong></li>
+<li>Thiết kế bố cục (Layout) chuyên nghiệp theo chuẩn UI/UX hiện đại:</li>
+<li><strong>Hàng trên cùng (5 KPI Cards):</strong> <code>Total Bookings</code>, <code>Actual Revenue ($)</code>, <code>Revenue Loss ($)</code>, <code>Cancellation Rate %</code> (tô màu cảnh báo đỏ nếu > 35%), <code>ADR ($)</code>.</li>
+<li><strong>Cột bên trái / Thanh trên (Slicers lọc đa chiều):</strong> Năm (<code>2015, 2016, 2017</code>), Loại khách sạn (<code>City Hotel</code>, <code>Resort Hotel</code>), Phân khúc thị trường (<code>market_segment</code>).</li>
+<li><strong>Biểu đồ 1 (Line and Clustered Column Chart):</strong> Xu hướng Doanh thu thực tế (<code>Actual Revenue</code>), Doanh thu mất do hủy (<code>Revenue Loss</code>) và đường <code>Cancellation Rate %</code> theo từng tháng/quý (Hỗ trợ Drill-down theo <code>Date Hierarchy</code>).</li>
+<li><strong>Biểu đồ 2 (Clustered Bar Chart):</strong> So sánh hiệu quả kinh doanh theo Kênh phân phối (<code>market_segment</code> – thấy ngay <em>Online TA</em> chiếm lượng đặt lớn nhất nhưng cũng hủy nhiều nhất).</li>
+<li><strong>Biểu đồ 3 (Filled Map / Shape Map):</strong> Phân bố lượng khách và doanh thu theo Quốc tịch (<code>country_code</code>: PRT, GBR, FRA, ESP, DEU...).</li>
+<li><strong>Biểu đồ 4 (Donut / Matrix Chart):</strong> Cơ cấu khách hàng (<code>customer_type</code>) và tỷ lệ khách quay lại (<code>is_repeated_guest</code>).</li>
+<li><strong>Nhiệm vụ Tài liệu (Document):</strong></li>
+<li>Viết <strong>Mục 3.4.B.1 (Phân tích Mô tả - Descriptive Analytics trên Dashboard 1: Nhận diện các xu hướng mùa vụ và biến động bất thường)</strong> kèm số liệu trích xuất từ biểu đồ.</li>
+</ul>
+<hr/>
+<h3>HẠNG MỤC 2.3: Thiết kế Dashboard 2 – Detailed / Diagnostic Analytics (Phân tích Nguyên nhân)</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Huỳnh Võ Đại Dương</strong></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 30/10 – 02/11/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Power BI Diagnostic Visuals):</strong></li>
+<li>Thiết lập tính năng <strong>Drill-through</strong> từ Dashboard 1 sang Dashboard 2 (Người dùng click chuột phải vào một Tháng hoặc một Kênh bán trên Dashboard 1 $\rightarrow$ chọn <em>"Drill through to Cancellation Diagnostic"</em> để nhảy sang Dashboard 2 xem nguyên nhân gốc rễ).</li>
+<li>Xây dựng 4 biểu đồ chẩn đoán định lượng:</li>
+<li><strong>Biểu đồ 1 (Decomposition Tree - Cây phân rã):</strong> Phân rã chỉ số <code>Canceled Bookings</code> hoặc <code>Revenue Loss</code> theo chuỗi nguyên nhân: <code>Hotel Name</code> $\rightarrow$ <code>Market Segment</code> $\rightarrow$ <code>Deposit Type</code> $\rightarrow$ <code>Lead Time Group</code> $\rightarrow$ <code>Customer Type</code>.</li>
+<li><strong>Biểu đồ 2 (Column/Line Chart theo nhóm Lead Time):</strong> Chia <code>lead_time</code> thành các bậc (<code>0-7 ngày</code>, <code>8-30 ngày</code>, <code>31-90 ngày</code>, <code>91-180 ngày</code>, <code>>180 ngày</code>) để chứng minh định lượng: <em>Đặt trước dưới 7 ngày tỷ lệ hủy chỉ ~10%, nhưng đặt trước >180 ngày tỷ lệ hủy vọt lên >60%!</em></li>
+<li><strong>Biểu đồ 3 (100% Stacked Bar Chart – Tác động của Yêu cầu đặc biệt & Nâng hạng phòng):</strong> Chứng minh khách có <code>total_of_special_requests >= 2</code> hoặc được giữ đúng loại phòng (<code>is_room_upgraded</code>) có tỷ lệ hủy thấp hơn hẳn khách không có yêu cầu đặc biệt.</li>
+<li><strong>Biểu đồ 4 (Detailed Evidence Matrix):</strong> Bảng bằng chứng định lượng tổng hợp các yếu tố đóng góp vào tổn thất doanh thu và khuyến nghị hành động (ví dụ: áp dụng đặt cọc một phần cho các đơn <em>Online TA</em> có <em>Lead Time > 90 ngày</em>).</li>
+<li><strong>Nhiệm vụ Tài liệu (Document):</strong></li>
+<li>Viết <strong>Mục 3.4.B.2 (Phân tích Chẩn đoán - Diagnostic Analytics trên Dashboard 2: Bằng chứng định lượng giải thích nguyên nhân hủy phòng và sụt giảm doanh thu)</strong>.</li>
+</ul>
+<hr/>
+<h3>HẠNG MỤC 2.4: Biên tập Báo cáo Phân tích Tổng hợp & Dựng Video Demo Seminar 2</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Thạch Ý</strong></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 01/11 – 04/11/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật & Sản phẩm:</strong></li>
+<li>Kiểm thử chéo (QA) toàn bộ con số trên Power BI đối chiếu với câu lệnh SQL chạy trực tiếp trên PostgreSQL <code>dds</code> để đảm bảo <strong>không sai lệch dù chỉ 1 dòng</strong>.</li>
+<li>Xây dựng luồng kể chuyện dữ liệu (<strong>Data Storytelling</strong>) trên Power BI (thêm nút điều hướng Page Navigation giữa Dashboard 1 và Dashboard 2, nút Reset Filters).</li>
+<li>Tổng hợp và trình bày <strong>Báo cáo Phân tích (PDF)</strong> hoàn chỉnh từ Chương 1 đến Chương 4 (chuẩn bị nộp lên Moodle ngày 05/11).</li>
+<li>Viết kịch bản và quay/dựng <strong>Video Demo Giai đoạn 2 (5–7 phút)</strong>: Minh họa từ kho dữ liệu PostgreSQL (<code>dds</code>), mô hình Star Schema trên Power BI, công thức DAX, đến thao tác lọc đa chiều trên Dashboard 1 và Drill-through tìm nguyên nhân trên Dashboard 2.</li>
+</ul>
+<hr/>
+<h2>3. LỊCH TRÌNH CHI TIẾT GIAI ĐOẠN 2 (28/10 – 05/11/2026)</h2>
+<table><thead><tr>
+<th>Ngày</th>
+<th>Mốc công việc cụ thể</th>
+<th>Người thực hiện</th>
+<th>Kết quả đầu ra (Deliverable)</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>28/10 – 29/10</strong></td>
+<td>- Kiên tạo file <code>powerbi/Hotel_BI_Dashboard.pbix</code>, nối DB <code>dds</code>, dựng Star Schema, Hierarchies và 12 DAX Measures.<br>- Kiên push file <code>.pbix</code> nền tảng lên GitHub.</td>
+<td>Đào Trung Kiên</td>
+<td>File <code>Hotel_BI_Dashboard.pbix</code> v1.0 có sẵn Model & DAX.</td>
+</tr>
+<tr>
+<td><strong>30/10 – 01/11</strong></td>
+<td>- Thanh thiết kế <strong>Dashboard 1 (Overview)</strong>.<br>- Dương thiết kế <strong>Dashboard 2 (Diagnostic + Drill-through)</strong>.<br>- Ý viết SQL đối soát số liệu KPIs và chuẩn bị khung Báo cáo Phân tích.</td>
+<td>Thanh, Dương, Ý</td>
+<td>Hoàn thiện 2 trang Dashboard Overview & Diagnostic.</td>
+</tr>
+<tr>
+<td><strong>02/11 – 03/11</strong></td>
+<td>- Ghép 2 trang Dashboard vào file <code>.pbix</code> chung, đồng bộ màu sắc (Theme khách sạn sang trọng: Xanh Navy & Vàng Gold).<br>- Hoàn thành toàn bộ nội dung Báo cáo Phân tích (PDF).</td>
+<td>Cả nhóm</td>
+<td>File <code>.pbix</code> v2.0 hoàn chỉnh & Báo cáo PDF bản nháp.</td>
+</tr>
+<tr>
+<td><strong>04/11 – 05/11</strong></td>
+<td>- Quay Video Demo & Trình bày sản phẩm.<br>- Nộp Báo cáo phân tích, Source code và Video Demo đúng hạn Seminar 2 (05/11/2026).</td>
+<td>Cả nhóm (Ý dựng video, Kiên kiểm duyệt cuối)</td>
+<td>Nộp bài Seminar 2 thành công.</td>
+</tr>
+</tbody></table></div><div id="sem3" class="tab-pane "><h1>📙 SIDE DOC 3: KẾ HOẠCH GIAI ĐOẠN 3 – SEMINAR 3 (06/11 – 14/11/2026)</h1>
+<blockquote><strong>Chủ đề Seminar 3 (14/11/2026):</strong> <em>Lập lịch ETL tự động, Dashboard theo dõi/giám sát kết quả mỗi lần ETL, và Giải thích kết quả phân tích bằng Generative AI</em></blockquote>
+<blockquote><strong>Thời gian thực hiện:</strong> <strong>06/11/2026 – 14/11/2026 (9 ngày)</strong></blockquote>
+<blockquote><strong>Phạm vi yêu cầu đề bài giải quyết trong Giai đoạn 3:</strong> Mục <strong>3.1 (Vận hành & Lập lịch tự động)</strong>, <strong>Dashboard Giám sát ETL (<code>control</code>)</strong>, <strong>Mục 3.5 (Generative AI – AI-Assisted Analytics + Điểm cộng Hỏi đáp ngôn ngữ tự nhiên)</strong>, và <strong>Đóng gói 5 sản phẩm cuối kỳ</strong>.</blockquote>
+<hr/>
+<h2>1. MỤC TIÊU CỐT LÕI CỦA GIAI ĐOẠN 3</h2>
+<p>Ở chặng cuối cùng (Seminar 3 - 14/11), nhóm nâng cấp hệ thống từ một dự án BI tĩnh thành một <strong>Hệ thống DataOps + AI-BI tự động hóa hoàn chỉnh</strong>, giải quyết trọn vẹn 3 bài toán giảng viên yêu cầu:</p>
+<ul>
+<li><strong>Lập lịch ETL tự động (Automated ETL Scheduling trên Mage.ai):</strong> Cấu hình Triggers (Schedule theo thời gian / Cron expression & Event) tự động quét batch mới trong thư mục <code>data/</code>, nạp vào <code>stage</code>, kích hoạt tiếp <code>dbt build</code> cập nhật <code>dds</code>, và ghi log chi tiết vào <code>control.etl_batch_log</code>.</li>
+<li><strong>Dashboard 3 – ETL Monitoring & Data Quality (Giám sát kết quả mỗi lần ETL):</strong> Xây dựng một trang Dashboard chuyên biệt trên Power BI (và trên Web App) đọc trực tiếp từ schema <code>control</code> để theo dõi: Lịch sử các lần chạy ETL, tỷ lệ chạy thành công/lỗi, thời gian xử lý (latency), số lượng dòng nạp mới/cập nhật/từ chối qua từng batch, và chi tiết thông báo lỗi khi pipeline gặp sự cố.</li>
+<li><strong>Ứng dụng Generative AI (Gemini 2.5 Flash API + Streamlit / Power BI Integration):</strong></li>
+<li><strong>Tự động tạo bản tóm tắt (AI-generated Executive Summary)</strong> từ các KPIs thật trong <code>dds</code> và trạng thái ETL trong <code>control</code>.</li>
+<li><strong>Giải thích xu hướng & biến động (AI Anomaly & Diagnostic Explanation):</strong> Giải thích tại sao tháng X hoặc kênh bán Y có tỷ lệ hủy phòng cao dựa trên số liệu định lượng trích xuất trực tiếp từ DB (cam kết <strong>0% Hallucination</strong> – chỉ nói dựa trên số liệu thực tế).</li>
+<li><strong>[Điểm cộng khuyến khích] Hỏi đáp bằng ngôn ngữ tự nhiên (Natural Language Q&A / Text-to-SQL):</strong> Cho phép người dùng nhập câu hỏi tiếng Việt (ví dụ: <em>"Top 5 quốc gia nào mang lại doanh thu thực tế cao nhất ở Resort Hotel năm 2017?"</em>) $\rightarrow$ AI tự sinh câu lệnh SQL chuẩn trên <code>dds</code>, chạy lấy bảng kết quả thật và diễn giải câu trả lời bằng tiếng Việt.</li>
+</ul>
+<hr/>
+<h2>2. PHÂN CÔNG THEO HẠNG MỤC CÔNG VIỆC (SEMINAR 3)</h2>
+<h3>HẠNG MỤC 3.1: Lập lịch ETL Tự động (Mage.ai Triggers) & Chuỗi Pipeline End-to-End</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Huỳnh Võ Đại Dương</strong></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 06/11 – 09/11/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Code & Cấu hình Mage.ai):</strong></li>
+<li>Nối block <code>dbt build</code> trực tiếp vào cuối pipeline <code>hotel_ingestion_pipeline</code> trên Mage.ai (để khi nạp xong <code>stage</code> thành công, Mage tự động gọi <code>dbt run</code> và <code>dbt test</code> cập nhật luôn <code>dds</code> và ghi kết quả test vào <code>control.etl_batch_log</code>).</li>
+<li>Thiết lập <strong>Triggers (Lập lịch)</strong> trên Mage.ai (<code>triggers.yaml</code>):</li>
+<li><strong>Trigger 1 (<code>daily_hotel_incremental_schedule</code>):</strong> Chạy tự động theo lịch (Cron <code>0 2 <em> </em> *</code> hoặc mỗi 5 phút khi demo).</li>
+<li><strong>Trigger 2 (<code>manual_rerun_with_params</code>):</strong> Cho phép truyền biến runtime <code>batch_file</code> để chạy lại (re-run) bất kỳ batch nào bị lỗi.</li>
+<li>Tạo kịch bản dữ liệu lịch sử 10–15 lần chạy ETL trong bảng <code>control.etl_batch_log</code> (bao gồm các lần chạy <code>FULL_LOAD</code>, <code>INCREMENTAL_LOAD</code> thành công, 1 lần <code>FAILED</code> do file sai định dạng cột, 1 lần <code>WARNING</code> do có dòng bị từ chối vì <code>adr < 0</code>, và lần <code>RETRY_SUCCESS</code> sau khi sửa lỗi) để Dashboard giám sát ETL có dữ liệu cực kỳ sinh động.</li>
+<li><strong>Nhiệm vụ Tài liệu (Document):</strong></li>
+<li>Viết phần <strong>Cấu hình Lập lịch ETL tự động (Mage Schedules/Triggers) & Kịch bản vận hành/chạy lại khi có lỗi</strong> trong Báo cáo cuối kỳ.</li>
+</ul>
+<hr/>
+<h3>HẠNG MỤC 3.2: Xây dựng Dashboard 3 – Theo dõi & Giám sát Kết quả mỗi lần ETL</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Phạm Ngọc Thanh</strong></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 07/11 – 10/11/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Power BI ETL Monitoring Dashboard):</strong></li>
+<li>Trong file <code>Hotel_BI_Dashboard.pbix</code>, kết nối thêm bảng <code>control.etl_batch_log</code> từ PostgreSQL.</li>
+<li>Thiết kế trang <strong>Dashboard 3 – ETL Pipeline & Data Quality Monitor</strong>:</li>
+<li><strong>KPI Cards Giám sát:</strong> <code>Tổng số lần chạy ETL (Total Runs)</code>, <code>Tỷ lệ Thành công (Success Rate %)</code>, <code>Tổng số dòng đã nạp (Total Rows Ingested)</code>, <code>Số dòng bị từ chối (Rejected Rows)</code>, <code>Thời gian chạy trung bình (Avg Duration Sec)</code>.</li>
+<li><strong>Biểu đồ 1 (Combo Bar & Line Chart):</strong> Số lượng bản ghi nạp thành công (<code>rows_valid</code>) vs bản ghi lỗi (<code>rows_rejected</code>) và Thời gian thực thi (<code>duration_seconds</code>) qua từng lần chạy batch.</li>
+<li><strong>Biểu đồ 2 (Donut / Status Chart):</strong> Tỷ lệ trạng thái các lần chạy (<code>SUCCESS</code>, <code>FAILED</code>, <code>WARNING</code>) và phân bổ theo loại nạp (<code>FULL</code> vs <code>INCREMENTAL</code>).</li>
+<li><strong>Biểu đồ 3 (Audit Log Table có Conditional Formatting):</strong> Bảng chi tiết từng lần chạy (<code>run_id</code>, <code>started_at</code>, <code>batch_file</code>, <code>load_mode</code>, <code>status</code> tô màu Xanh/Đỏ/Vàng, <code>rows_valid</code>, <code>error_message</code> hiển thị rõ nguyên nhân lỗi để kỹ sư dữ liệu xử lý).</li>
+<li><strong>Nhiệm vụ Tài liệu (Document):</strong></li>
+<li>Viết phần <strong>Thiết kế & Phân tích Dashboard Giám sát ETL (ETL Monitoring Dashboard)</strong> trong Báo cáo cuối kỳ.</li>
+</ul>
+<hr/>
+<h3>HẠNG MỤC 3.3: Xây dựng Core Engine Generative AI (Chống suy diễn & Giải thích dựa trên dữ liệu thật)</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Đào Trung Kiên</strong> <em>(Nhóm trưởng)</em></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 07/11 – 10/11/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Code Python Backend AI tại <code>ai_assistant/</code>):</strong></li>
+<li>Xây dựng module truy xuất ngữ cảnh dữ liệu thực (<code>ai_assistant/prompts.py</code> & <code>db_context.py</code>):</li>
+<li>Tự động chạy các câu SQL tổng hợp trên <code>dds</code> (lấy KPI tổng quan, xu hướng theo tháng, phân rã tỷ lệ hủy theo kênh bán & loại đặt cọc) và trên <code>control.etl_batch_log</code> (lấy trạng thái lần ETL mới nhất) rồi đóng gói thành chuỗi JSON/Markdown có cấu trúc.</li>
+<li>Tích hợp <strong>Google Gemini API (<code>google-genai</code> SDK - model <code>gemini-2.5-flash</code>)</strong> với cơ chế <strong>Grounded Analytics Prompting</strong>:</li>
+<li><strong>Chức năng 1 – AI Executive Summary:</strong> Tự động tóm tắt bức tranh kinh doanh khách sạn & tình trạng dữ liệu ETL mới nhất, kèm trích dẫn con số chính xác từ DB.</li>
+<li><strong>Chức năng 2 – AI Diagnostic & Trend Explainer:</strong> Cho phép người dùng chọn một lát cắt trên Dashboard (ví dụ: <em>Kênh Online TA</em>, <em>Khách sạn City Hotel</em>, hoặc <em>Mùa cao điểm Tháng 7-8</em>), AI sẽ đọc bảng phân rã định lượng của lát cắt đó để giải thích nguyên nhân biến động và đề xuất giải pháp quản trị (ví dụ: chính sách đặt cọc theo ngưỡng <code>lead_time</code>).</li>
+<li>Thiết lập quy tắc nghiêm ngặt trong System Prompt: <em>"Mọi nhận định phải trích dẫn con số cụ thể từ bảng dữ liệu Context được cung cấp. Tuyệt đối không suy diễn ngoài dữ liệu."</em></li>
+<li><strong>Nhiệm vụ Tài liệu (Document):</strong></li>
+<li>Viết <strong>Mục 3.5.1 (Kiến trúc tích hợp Generative AI, Cơ chế Grounding chống Hallucination và Thiết kế Prompt)</strong> trong Báo cáo cuối kỳ.</li>
+</ul>
+<hr/>
+<h3>HẠNG MỤC 3.4: Giao diện AI-Assisted Analytics, Hỏi đáp Ngôn ngữ Tự nhiên (NL2SQL) & Video Tổng kết</h3>
+<ul>
+<li><strong>Người phụ trách chính:</strong> <strong>Thạch Ý</strong></li>
+<li><strong>Thời gian hoàn thành:</strong> Ngày 08/11 – 13/11/2026</li>
+<li><strong>Nhiệm vụ Kỹ thuật (Streamlit UI & NL2SQL Chat tại <code>ai_assistant/app.py</code>):</strong></li>
+<li>Xây dựng giao diện Web App <strong>Hotel BI & AI Copilot</strong> bằng Streamlit (chạy tại <code>http://localhost:8501</code>, có thể mở song song hoặc nhúng link từ Power BI):</li>
+<li><strong>Tab 1 – AI Executive Summary & Anomaly Explainer:</strong> Giao diện chọn bộ lọc (Năm, Loại khách sạn, Kênh bán) $\rightarrow$ Hiển thị bảng số liệu chuẩn từ <code>dds</code> + Bản phân tích chuyên sâu do AI tạo ra (có nút xuất báo cáo Markdown).</li>
+<li><strong>Tab 2 – Hỏi đáp dữ liệu bằng Ngôn ngữ Tự nhiên (Natural Language Q&A - Điểm cộng):</strong> Người dùng gõ câu hỏi bất kỳ bằng tiếng Việt $\rightarrow$ AI chuyển thành câu lệnh <code>SELECT</code> an toàn (chỉ cho phép <code>SELECT</code> trên schema <code>dds</code> và <code>control</code>) $\rightarrow$ Thực thi trên PostgreSQL $\rightarrow$ Hiển thị <strong>Câu lệnh SQL kiểm chứng + Bảng dữ liệu kết quả + Lời giải thích của AI</strong>.</li>
+<li><strong>Tab 3 – AI ETL Log Inspector:</strong> AI đọc bảng <code>control.etl_batch_log</code>, tóm tắt sức khỏe hệ thống ETL và gợi ý cách khắc phục nếu phát hiện batch gần nhất bị <code>FAILED</code>.</li>
+<li>Cùng cả nhóm hoàn thiện <strong>Báo cáo PDF Cuối kỳ</strong> và dựng <strong>Video Demo Tổng hợp End-to-End</strong> (minh họa đầy đủ từ Lập lịch ETL $\rightarrow$ Dashboard Giám sát ETL $\rightarrow$ Power BI Overview/Diagnostic $\rightarrow$ AI giải thích & hỏi đáp).</li>
+</ul>
+<hr/>
+<h2>3. LỊCH TRÌNH CHI TIẾT GIAI ĐOẠN 3 (06/11 – 14/11/2026)</h2>
+<table><thead><tr>
+<th>Ngày</th>
+<th>Mốc công việc cụ thể</th>
+<th>Người thực hiện</th>
+<th>Kết quả đầu ra (Deliverable)</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>06/11 – 08/11</strong></td>
+<td>- <strong>Dương:</strong> Cấu hình Mage Triggers lập lịch tự động & sinh dữ liệu log thực tế vào <code>control.etl_batch_log</code>.<br>- <strong>Kiên:</strong> Viết xong module kết nối Gemini API & Grounded Prompt đọc dữ liệu từ <code>dds</code> & <code>control</code>.</td>
+<td>Dương, Kiên</td>
+<td>Pipeline tự chạy theo lịch; hàm Python gọi Gemini trả về phân tích chuẩn xác.</td>
+</tr>
+<tr>
+<td><strong>09/11 – 10/11</strong></td>
+<td>- <strong>Thanh:</strong> Thiết kế xong <strong>Dashboard 3 (ETL Monitoring)</strong> trên Power BI.<br>- <strong>Ý:</strong> Xây dựng xong giao diện Streamlit <code>ai_assistant/app.py</code> gồm 3 Tab (Summary, Diagnostic Explainer, NL2SQL Chat).</td>
+<td>Thanh, Ý</td>
+<td>File <code>.pbix</code> có đủ 3 Dashboards; Web App AI chạy mượt tại port <code>8501</code>.</td>
+</tr>
+<tr>
+<td><strong>11/11 – 12/11</strong></td>
+<td>- Kiểm thử tích hợp toàn hệ thống: Mage Trigger tự chạy nạp batch mới $\rightarrow$ Dashboard 3 cập nhật log $\rightarrow$ Dashboard 1 & 2 cập nhật KPI $\rightarrow$ AI Assistant đọc số liệu mới và giải thích.<br>- Hoàn thiện <code>README.md</code> hướng dẫn chạy hệ thống chỉ với 2 lệnh.</td>
+<td>Cả nhóm</td>
+<td>Toàn bộ source code sạch sẽ trên GitHub <code>main</code>.</td>
+</tr>
+<tr>
+<td><strong>13/11 – 14/11</strong></td>
+<td>- Xuất file Báo cáo PDF hoàn chỉnh.<br>- Quay Video Demo Seminar 3 & Nộp đủ 5 hạng mục sản phẩm đúng hạn <strong>14/11/2026</strong>.</td>
+<td>Cả nhóm</td>
+<td>Hoàn thành xuất sắc 100% Mini Project môn BI!</td>
+</tr>
+</tbody></table></div>
+  </div>
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function copyCurrentTab() {
+  const activePane = document.querySelector('.tab-pane.active');
+  const range = document.createRange();
+  range.selectNode(activePane);
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+  document.execCommand('copy');
+  window.getSelection().removeAllRanges();
+  alert('Đã copy định dạng bảng biểu! Bạn chỉ cần mở Google Docs (docs.new) và nhấn Ctrl+V.');
+}
+</script>
+</body>
+</html>
