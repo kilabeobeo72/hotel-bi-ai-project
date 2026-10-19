@@ -10,18 +10,23 @@ if 'test' not in globals():
 def validate_hotel_data(data: pd.DataFrame, *args, **kwargs):
     """
     Block 2 (Transformer): Kiểm tra cấu trúc và chất lượng dữ liệu cơ bản trước khi nạp vào stage.
+    - Chuẩn hóa kiểu dữ liệu số & ngày tháng
+    - Lọc bỏ các bản ghi không hợp lệ (ví dụ: tổng số khách = 0 hoặc adr < 0)
     """
     df = data.copy()
 
+    # Điền giá trị mặc định cho các cột có NULL trong dataset gốc
     df['children'] = pd.to_numeric(df['children'], errors='coerce').fillna(0).astype(int)
     df['country'] = df['country'].fillna('UNK').astype(str)
     df['agent'] = df['agent'].fillna(0).astype(str)
     df['company'] = df['company'].fillna(0).astype(str)
 
+    # Ép kiểu số cho các cột định lượng quan trọng
     df['lead_time'] = pd.to_numeric(df['lead_time'], errors='coerce').fillna(0).astype(int)
     df['adr'] = pd.to_numeric(df['adr'], errors='coerce').fillna(0.0)
     df['is_canceled'] = pd.to_numeric(df['is_canceled'], errors='coerce').fillna(0).astype(int)
 
+    # Kiểm tra quy tắc nghiệp vụ cơ bản: Tổng số khách phải > 0 và ADR >= 0
     total_guests = df['adults'] + df['children'] + df['babies']
     valid_mask = (total_guests > 0) & (df['adr'] >= 0) & (df['booking_uid'].notnull())
 

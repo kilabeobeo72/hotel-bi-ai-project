@@ -22,6 +22,7 @@ def load_hotel_from_csv(*args, **kwargs):
     file_path = Path('/home/src/data') / batch_file
     df = pd.read_csv(file_path)
 
+    # Nếu chưa có cột booking_uid thì tự sinh
     if 'booking_uid' not in df.columns:
         df['booking_uid'] = [f"{batch_file[:8]}-{i:06d}" for i in range(1, len(df) + 1)]
 

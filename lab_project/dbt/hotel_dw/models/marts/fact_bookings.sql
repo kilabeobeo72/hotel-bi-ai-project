@@ -1,7 +1,11 @@
 -- Phụ trách chính (Giai đoạn 1): Phạm Ngọc Thanh
+-- Bảng Sự kiện Đặt phòng (Fact Bookings)
+-- Grain: Mỗi dòng đại diện cho 01 giao dịch đặt phòng (booking_id)
+
 WITH stg AS (
     SELECT * FROM {{ ref('stg_hotel_bookings') }}
 )
+
 SELECT
     stg.booking_id,
     MD5(stg.hotel_name) AS hotel_key,
@@ -10,6 +14,8 @@ SELECT
     MD5(CONCAT_WS('|', stg.reserved_room_type, stg.assigned_room_type, stg.meal_code, stg.deposit_type)) AS policy_key,
     CAST(TO_CHAR(stg.arrival_date, 'YYYYMMDD') AS INTEGER) AS arrival_date_key,
     CAST(TO_CHAR(stg.reservation_status_date, 'YYYYMMDD') AS INTEGER) AS status_date_key,
+
+    -- Các chỉ số định lượng (Measures)
     stg.is_canceled,
     stg.lead_time,
     CASE

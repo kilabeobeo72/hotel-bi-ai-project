@@ -44,6 +44,7 @@ def export_hotel_to_stage_and_log(df: DataFrame, **kwargs) -> None:
             completed_at = datetime.utcnow()
             duration = (completed_at - started_at).total_seconds()
 
+            # Ghi nhận kết quả thành công vào bảng control.etl_batch_log
             log_df = DataFrame([{
                 'pipeline_name': 'hotel_ingestion_pipeline',
                 'batch_file': batch_file,

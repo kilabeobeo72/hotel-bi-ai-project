@@ -22,19 +22,24 @@ def split_hotel_dataset(raw_file: str = "hotel_bookings.csv"):
 
     print(f"Đang đọc dữ liệu gốc từ {source_path}...")
     df = pd.read_csv(source_path)
+
+    # Tạo khóa định danh dòng (booking_uid) để hỗ trợ Incremental Upsert
     df["booking_uid"] = [f"BK-{i:06d}" for i in range(1, len(df) + 1)]
 
+    # 1. Batch 01 (Full Load): Dữ liệu lịch sử năm 2015 và 2016
     batch_01 = df[df["arrival_date_year"].isin([2015, 2016])].copy()
     batch_01_path = data_dir / "batch_01_full_2015_2016.csv"
     batch_01.to_csv(batch_01_path, index=False)
     print(f"[+] Đã tạo {batch_01_path.name}: {len(batch_01):,} dòng (Dùng cho Full Load)")
 
+    # 2. Batch 02 (Incremental Load 1): Nửa đầu năm 2017 (Tháng 1 -> Tháng 5)
     h1_months = ["January", "February", "March", "April", "May"]
     batch_02 = df[(df["arrival_date_year"] == 2017) & (df["arrival_date_month"].isin(h1_months))].copy()
     batch_02_path = data_dir / "batch_02_inc_2017_H1.csv"
     batch_02.to_csv(batch_02_path, index=False)
     print(f"[+] Đã tạo {batch_02_path.name}: {len(batch_02):,} dòng (Dùng cho Incremental Load đợt 1)")
 
+    # 3. Batch 03 (Incremental Load 2): Nửa cuối năm 2017 (Tháng 6 -> Tháng 8)
     h2_months = ["June", "July", "August"]
     batch_03 = df[(df["arrival_date_year"] == 2017) & (df["arrival_date_month"].isin(h2_months))].copy()
     batch_03_path = data_dir / "batch_03_inc_2017_H2.csv"

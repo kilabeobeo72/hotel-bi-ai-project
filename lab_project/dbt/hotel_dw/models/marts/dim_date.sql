@@ -1,7 +1,14 @@
 -- Phụ trách chính (Giai đoạn 1): Phạm Ngọc Thanh
+-- Bảng chiều Thời gian (Dim Date) phục vụ phân tích theo Năm, Quý, Tháng, Tuần, Cuối tuần
+
 WITH date_series AS (
-    SELECT generate_series(DATE '2014-01-01', DATE '2018-12-31', INTERVAL '1 day')::DATE AS full_date
+    SELECT generate_series(
+        DATE '2014-01-01',
+        DATE '2018-12-31',
+        INTERVAL '1 day'
+    )::DATE AS full_date
 )
+
 SELECT
     CAST(TO_CHAR(full_date, 'YYYYMMDD') AS INTEGER) AS date_key,
     full_date,

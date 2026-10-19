@@ -1,7 +1,15 @@
 -- Phụ trách chính (Giai đoạn 1): Phạm Ngọc Thanh
+-- Bảng chiều Chính sách Phòng, Bữa ăn & Đặt cọc (Dim Room Policy)
+
 WITH distinct_policies AS (
-    SELECT DISTINCT reserved_room_type, assigned_room_type, meal_code, deposit_type FROM {{ ref('stg_hotel_bookings') }}
+    SELECT DISTINCT
+        reserved_room_type,
+        assigned_room_type,
+        meal_code,
+        deposit_type
+    FROM {{ ref('stg_hotel_bookings') }}
 )
+
 SELECT
     MD5(CONCAT_WS('|', reserved_room_type, assigned_room_type, meal_code, deposit_type)) AS policy_key,
     reserved_room_type,

@@ -10,15 +10,16 @@ CREATE SCHEMA IF NOT EXISTS stage;
 CREATE SCHEMA IF NOT EXISTS dds;
 CREATE SCHEMA IF NOT EXISTS control;
 
+-- Bảng Audit Log theo dõi mỗi lần chạy ETL (Phục vụ Seminar 1 & Dashboard Giám sát Seminar 3)
 CREATE TABLE IF NOT EXISTS control.etl_batch_log (
     run_id              SERIAL PRIMARY KEY,
     pipeline_name       VARCHAR(100) NOT NULL,
     batch_file          VARCHAR(150) NOT NULL,
-    load_mode           VARCHAR(30)  NOT NULL,
+    load_mode           VARCHAR(30)  NOT NULL, -- 'FULL' hoặc 'INCREMENTAL'
     rows_extracted      INTEGER      DEFAULT 0,
     rows_valid          INTEGER      DEFAULT 0,
     rows_rejected       INTEGER      DEFAULT 0,
-    status              VARCHAR(30)  NOT NULL,
+    status              VARCHAR(30)  NOT NULL, -- 'SUCCESS', 'FAILED', 'WARNING'
     error_message       TEXT,
     started_at          TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
     completed_at        TIMESTAMP,
