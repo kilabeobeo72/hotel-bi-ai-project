@@ -1,120 +1,145 @@
-# Phụ trách chính (Giai đoạn 1): Thạch Ý
-# Định nghĩa dbt tests và tài liệu hóa mô hình dữ liệu Star Schema (dds)
-
+# File: lab_project/dbt/hotel_dw/models/marts/schema.yml
 version: 2
 
 models:
   - name: dim_date
-    description: "Bảng chiều thời gian chuẩn từ 2014 đến 2018"
+    description: "Bảng chiều thời gian từ 2014 đến 2018"
     columns:
       - name: date_key
-        description: "Khóa chính định dạng YYYYMMDD"
+        tests:
+          - unique
+          - not_null
+      - name: full_date
         tests:
           - unique
           - not_null
 
   - name: dim_hotel
-    description: "Bảng chiều thông tin khách sạn (Resort Hotel và City Hotel)"
+    description: "Bảng chiều thông tin và phân loại khách sạn"
     columns:
       - name: hotel_key
-        description: "Surrogate key của khách sạn"
         tests:
           - unique
           - not_null
       - name: hotel_name
-        description: "Tên loại khách sạn"
         tests:
           - not_null
           - accepted_values:
-              values: ['Resort Hotel', 'City Hotel']
+              arguments:
+                values: ['Resort Hotel', 'City Hotel']
+      - name: hotel_category
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Resort', 'City']
 
   - name: dim_customer
-    description: "Bảng chiều đặc điểm khách hàng và quốc tịch"
+    description: "Bảng chiều phân khúc khách hàng và nhóm khách"
     columns:
       - name: customer_key
-        description: "Surrogate key của khách hàng"
         tests:
           - unique
           - not_null
-      - name: country_code
-        description: "Mã quốc gia ISO 3 ký tự"
+      - name: customer_type
         tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values: ['Transient', 'Contract', 'Transient-Party', 'Group']
+      - name: guest_group_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Solo', 'Couple', 'Family', 'Group']
 
   - name: dim_channel
-    description: "Bảng chiều kênh phân phối và phân khúc thị trường"
+    description: "Bảng chiều kênh phân phối và đại lý"
     columns:
       - name: channel_key
-        description: "Surrogate key của kênh phân phối"
         tests:
           - unique
           - not_null
       - name: market_segment
-        description: "Phân khúc thị trường (Online TA, Offline TA/TO, Direct, Corporate...)"
+        tests:
+          - not_null
+      - name: distribution_channel
         tests:
           - not_null
 
   - name: dim_room_policy
-    description: "Bảng chiều chính sách phòng, bữa ăn và loại đặt cọc"
+    description: "Bảng chiều chính sách phòng, bữa ăn và đặt cọc"
     columns:
       - name: policy_key
-        description: "Surrogate key của chính sách phòng & đặt cọc"
         tests:
           - unique
           - not_null
-      - name: deposit_type
-        description: "Chính sách đặt cọc"
+      - name: meal_code
         tests:
           - not_null
           - accepted_values:
-              values: ['No Deposit', 'Non Refund', 'Refundable']
+              arguments:
+                values: ['BB', 'HB', 'FB', 'SC']
+      - name: deposit_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['No Deposit', 'Non Refund', 'Refundable']
 
   - name: fact_bookings
-    description: "Bảng Fact trung tâm lưu trữ giao dịch đặt phòng khách sạn (Grain: 1 dòng = 1 booking)"
+    description: "Bảng sự kiện trung tâm lưu trữ giao dịch đặt phòng khách sạn"
     columns:
-      - name: booking_id
-        description: "Khóa chính của đơn đặt phòng"
+      - name: booking_key
         tests:
           - unique
           - not_null
       - name: hotel_key
-        description: "Khóa ngoại tham chiếu tới dim_hotel"
         tests:
           - not_null
           - relationships:
-              to: ref('dim_hotel')
-              field: hotel_key
+              arguments:
+                to: ref('dim_hotel')
+                field: hotel_key
       - name: customer_key
-        description: "Khóa ngoại tham chiếu tới dim_customer"
         tests:
           - not_null
           - relationships:
-              to: ref('dim_customer')
-              field: customer_key
+              arguments:
+                to: ref('dim_customer')
+                field: customer_key
       - name: channel_key
-        description: "Khóa ngoại tham chiếu tới dim_channel"
         tests:
           - not_null
           - relationships:
-              to: ref('dim_channel')
-              field: channel_key
+              arguments:
+                to: ref('dim_channel')
+                field: channel_key
       - name: policy_key
-        description: "Khóa ngoại tham chiếu tới dim_room_policy"
         tests:
           - not_null
           - relationships:
-              to: ref('dim_room_policy')
-              field: policy_key
+              arguments:
+                to: ref('dim_room_policy')
+                field: policy_key
       - name: arrival_date_key
-        description: "Khóa ngoại tham chiếu tới dim_date"
         tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: status_date_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
       - name: is_canceled
-        description: "Trạng thái hủy phòng (1 = Hủy, 0 = Không hủy)"
         tests:
           - not_null
           - accepted_values:
-              values: [0, 1]
+              arguments:
+                values: [0, 1]

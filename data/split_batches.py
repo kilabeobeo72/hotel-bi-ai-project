@@ -6,22 +6,37 @@ Link tải Dataset Kaggle:
 https://www.kaggle.com/datasets/jessemostipak/hotel-booking-demand
 """
 
-import pandas as pd
+import sys
+import shutil
 from pathlib import Path
+import pandas as pd
+import kagglehub
+
+if sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
 
 
 def split_hotel_dataset(raw_file: str = "hotel_bookings.csv"):
     data_dir = Path(__file__).parent
     source_path = data_dir / raw_file
 
+    # Nếu chưa có file gốc, tự động tải qua kagglehub
     if not source_path.exists():
-        print(f"[!] Không tìm thấy {source_path}.")
-        print("Vui lòng tải 'hotel_bookings.csv' từ: https://www.kaggle.com/datasets/jessemostipak/hotel-booking-demand")
-        print("và đặt vào thư mục 'data/' trước khi chạy script này.")
-        return
+        print(f"[!] Không tìm thấy {source_path.name}. Đang tải từ Kaggle qua kagglehub...")
+        download_dir = Path(kagglehub.dataset_download("jessemostipak/hotel-booking-demand"))
+        
+        # Copy file hotel_bookings.csv từ cache về thư mục data/
+        downloaded_file = download_dir / "hotel_bookings.csv"
+        if downloaded_file.exists():
+            shutil.copy(downloaded_file, source_path)
+            print(f"[+] Đã tải và lưu {source_path.name} vào {data_dir}")
+        else:
+            print("[x] Không tìm thấy file hotel_bookings.csv trong dữ liệu đã tải.")
+            return
 
     print(f"Đang đọc dữ liệu gốc từ {source_path}...")
     df = pd.read_csv(source_path)
+
 
     # Tạo khóa định danh dòng (booking_uid) để hỗ trợ Incremental Upsert
     df["booking_uid"] = [f"BK-{i:06d}" for i in range(1, len(df) + 1)]

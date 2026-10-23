@@ -44,48 +44,48 @@ def export_hotel_to_stage_and_log(df: DataFrame, **kwargs) -> None:
             completed_at = datetime.utcnow()
             duration = (completed_at - started_at).total_seconds()
 
-            # Ghi nhận kết quả thành công vào bảng control.etl_batch_log
-            log_df = DataFrame([{
-                'pipeline_name': 'hotel_ingestion_pipeline',
-                'batch_file': batch_file,
-                'load_mode': load_mode,
-                'rows_extracted': rows_extracted,
-                'rows_valid': rows_valid,
-                'rows_rejected': rows_rejected,
-                'status': 'SUCCESS',
-                'error_message': None,
-                'started_at': started_at,
-                'completed_at': completed_at,
-                'duration_seconds': round(duration, 2),
-            }])
-            loader.export(
-                log_df,
-                schema_name='control',
-                table_name='etl_batch_log',
-                index=False,
-                if_exists='append',
-            )
+            # Ghi nhận kết quả thành công vào bảng control.etl_batch_log bằng câu lệnh INSERT chuẩn
+            with loader.conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO control.etl_batch_log (
+                        pipeline_name, batch_file, load_mode,
+                        rows_extracted, rows_valid, rows_rejected,
+                        status, error_message, started_at, completed_at, duration_seconds
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                    """,
+                    (
+                        'hotel_ingestion_pipeline', batch_file, load_mode,
+                        rows_extracted, rows_valid, rows_rejected,
+                        'SUCCESS', None, started_at, completed_at, round(duration, 2)
+                    )
+                )
+                loader.conn.commit()
+
         except Exception as exc:
+            try:
+                loader.conn.rollback()
+            except Exception:
+                pass
             completed_at = datetime.utcnow()
             duration = (completed_at - started_at).total_seconds()
-            log_df = DataFrame([{
-                'pipeline_name': 'hotel_ingestion_pipeline',
-                'batch_file': batch_file,
-                'load_mode': load_mode,
-                'rows_extracted': rows_extracted,
-                'rows_valid': 0,
-                'rows_rejected': rows_extracted,
-                'status': 'FAILED',
-                'error_message': str(exc)[:500],
-                'started_at': started_at,
-                'completed_at': completed_at,
-                'duration_seconds': round(duration, 2),
-            }])
-            loader.export(
-                log_df,
-                schema_name='control',
-                table_name='etl_batch_log',
-                index=False,
-                if_exists='append',
-            )
+            try:
+                with loader.conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO control.etl_batch_log (
+                            pipeline_name, batch_file, load_mode,
+                            rows_extracted, rows_valid, rows_rejected,
+                            status, error_message, started_at, completed_at, duration_seconds
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                        """,
+                        (
+                            'hotel_ingestion_pipeline', batch_file, load_mode,
+                            rows_extracted, 0, rows_extracted,
+                            'FAILED', str(exc)[:500], started_at, completed_at, round(duration, 2)
+                        )
+                    )
+                    loader.conn.commit()
+            except Exception:
+                pass
             raise exc

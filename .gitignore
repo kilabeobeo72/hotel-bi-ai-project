@@ -7,3 +7,5 @@ lab_project/dbt/hotel_dw/dbt_packages/
 lab_project/dbt/hotel_dw/logs/
 data/*.csv
 !data/sample_hotel_bookings.csv
+.user.yml
+.ssh_tunnel/

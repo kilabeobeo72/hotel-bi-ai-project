@@ -1,25 +1,30 @@
--- Phụ trách chính (Giai đoạn 1): Phạm Ngọc Thanh
--- Bảng chiều Thời gian (Dim Date) phục vụ phân tích theo Năm, Quý, Tháng, Tuần, Cuối tuần
+-- File: lab_project/dbt/hotel_dw/models/marts/dim_date.sql
+{{ config(
+    materialized='table',
+    schema='dds'
+) }}
 
-WITH date_series AS (
-    SELECT generate_series(
-        DATE '2014-01-01',
-        DATE '2018-12-31',
-        INTERVAL '1 day'
-    )::DATE AS full_date
+WITH date_spine AS (
+    SELECT
+        GENERATE_SERIES(
+            '2014-01-01'::DATE,
+            '2018-12-31'::DATE,
+            '1 day'::INTERVAL
+        )::DATE AS full_date
 )
 
 SELECT
-    CAST(TO_CHAR(full_date, 'YYYYMMDD') AS INTEGER) AS date_key,
+    CAST(TO_CHAR(full_date, 'YYYYMMDD') AS INT) AS date_key,
     full_date,
-    EXTRACT(YEAR FROM full_date)::INTEGER AS year,
-    EXTRACT(QUARTER FROM full_date)::INTEGER AS quarter,
-    'Q' || EXTRACT(QUARTER FROM full_date)::TEXT AS quarter_name,
-    EXTRACT(MONTH FROM full_date)::INTEGER AS month,
-    TO_CHAR(full_date, 'FMMonth') AS month_name,
-    EXTRACT(WEEK FROM full_date)::INTEGER AS week_of_year,
-    EXTRACT(DAY FROM full_date)::INTEGER AS day_of_month,
-    EXTRACT(ISODOW FROM full_date)::INTEGER AS day_of_week,
-    TO_CHAR(full_date, 'FMDay') AS day_name,
-    CASE WHEN EXTRACT(ISODOW FROM full_date) IN (6, 7) THEN TRUE ELSE FALSE END AS is_weekend
-FROM date_series
+    CAST(EXTRACT(YEAR FROM full_date) AS INT) AS year,
+    CAST(EXTRACT(QUARTER FROM full_date) AS INT) AS quarter,
+    CAST(EXTRACT(MONTH FROM full_date) AS INT) AS month,
+    TRIM(TO_CHAR(full_date, 'Month')) AS month_name,
+    CAST(EXTRACT(WEEK FROM full_date) AS INT) AS week_of_year,
+    CAST(EXTRACT(ISODOW FROM full_date) AS INT) AS day_of_week,
+    CASE
+        WHEN EXTRACT(ISODOW FROM full_date) IN (6, 7) THEN TRUE
+        ELSE FALSE
+    END AS is_weekend
+FROM date_spine
+ORDER BY date_key

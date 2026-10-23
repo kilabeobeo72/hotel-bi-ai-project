@@ -1,0 +1,77 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - validate_hotel_data
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load_hotel_csv
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: load_hotel_csv
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - load_stage_hotel
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: validate_hotel_data
+  retry_config: null
+  status: executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - load_hotel_csv
+  uuid: validate_hotel_data
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load_stage_hotel
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - validate_hotel_data
+  uuid: load_stage_hotel
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2026-10-23 00:00:00.000000+00:00'
+data_integration: null
+description: Ingestion du lieu Hotel Booking tu data/ vao PostgreSQL stage.raw_hotel_bookings
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: hotel_ingestion_pipeline
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags: []
+type: python
+uuid: hotel_ingestion_pipeline
+variables:
+  batch_file: batch_01_full_2015_2016.csv
+  load_mode: FULL
+variables_dir: /home/src/mage_data/lab_project
+widgets: []

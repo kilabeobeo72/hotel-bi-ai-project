@@ -32,8 +32,10 @@ services:
       - .env
     environment:
       USER_CODE_PATH: /home/src/lab_project
+      DBT_ALLOW_EXPERIMENTAL_ADAPTERS: "true"
     ports:
       - "6789:6789"
+      - "8080:8080"
       - "8501:8501"
     volumes:
       - .:/home/src
