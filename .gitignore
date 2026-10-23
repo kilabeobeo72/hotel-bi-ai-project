@@ -2,12 +2,10 @@
 __pycache__/
 *.pyc
 mage_data/
+lab_project/.file_versions/
+lab_project/.ssh_tunnel/
 lab_project/dbt/hotel_dw/target/
 lab_project/dbt/hotel_dw/dbt_packages/
 lab_project/dbt/hotel_dw/logs/
+lab_project/dbt/hotel_dw/.user.yml
 data/*.csv
-!data/sample_hotel_bookings.csv
-.user.yml
-.ssh_tunnel/
-
-lab_project/.file_versions/
