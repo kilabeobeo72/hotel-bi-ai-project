@@ -35,7 +35,7 @@ cleaned AS (
 
         -- Thông tin số lượng khách (xử lý an toàn trường hợp 'NA' hoặc NULL)
         CAST(GREATEST(COALESCE(adults, 0), 0) AS INT) AS adults,
-        CAST(GREATEST(COALESCE(CAST(NULLIF(TRIM(CAST(children AS TEXT)), 'NA') AS NUMERIC)::INT, 0), 0) AS children,
+        CAST(GREATEST(COALESCE(CAST(NULLIF(TRIM(CAST(children AS TEXT)), 'NA') AS NUMERIC), 0), 0) AS INT) AS children,
         CAST(GREATEST(COALESCE(babies, 0), 0) AS INT) AS babies,
 
         -- Thông tin khách hàng
@@ -78,7 +78,7 @@ cleaned AS (
     WHERE CAST(COALESCE(adr, 0) AS NUMERIC) >= 0
       AND (
           COALESCE(adults, 0) +
-          COALESCE(CAST(NULLIF(TRIM(CAST(children AS TEXT)), 'NA') AS NUMERIC)::INT, 0) +
+          CAST(COALESCE(CAST(NULLIF(TRIM(CAST(children AS TEXT)), 'NA') AS NUMERIC), 0) AS INT) +
           COALESCE(babies, 0)
       ) > 0
 )
