@@ -1,6 +1,6 @@
 """
 Script cắt bộ dữ liệu gốc hotel_bookings.csv (từ Kaggle) thành các file batch
-để mô phỏng cơ chế Full Load và Incremental Load trên Mage.ai.
+để mô phỏng cơ chế Full Load, Incremental Load và Error Handling trên Mage.ai.
 
 Link tải Dataset Kaggle:
 https://www.kaggle.com/datasets/jessemostipak/hotel-booking-demand
@@ -24,7 +24,7 @@ def split_hotel_dataset(raw_file: str = "hotel_bookings.csv"):
     if not source_path.exists():
         print(f"[!] Không tìm thấy {source_path.name}. Đang tải từ Kaggle qua kagglehub...")
         download_dir = Path(kagglehub.dataset_download("jessemostipak/hotel-booking-demand"))
-        
+
         # Copy file hotel_bookings.csv từ cache về thư mục data/
         downloaded_file = download_dir / "hotel_bookings.csv"
         if downloaded_file.exists():
@@ -36,7 +36,6 @@ def split_hotel_dataset(raw_file: str = "hotel_bookings.csv"):
 
     print(f"Đang đọc dữ liệu gốc từ {source_path}...")
     df = pd.read_csv(source_path)
-
 
     # Tạo khóa định danh dòng (booking_uid) để hỗ trợ Incremental Upsert
     df["booking_uid"] = [f"BK-{i:06d}" for i in range(1, len(df) + 1)]
@@ -60,6 +59,16 @@ def split_hotel_dataset(raw_file: str = "hotel_bookings.csv"):
     batch_03_path = data_dir / "batch_03_inc_2017_H2.csv"
     batch_03.to_csv(batch_03_path, index=False)
     print(f"[+] Đã tạo {batch_03_path.name}: {len(batch_03):,} dòng (Dùng cho Incremental Load đợt 2)")
+
+    # 4. Batch 04 (Corrupted Test): Giả lập file lỗi (cố tình làm hỏng dữ liệu: toàn bộ adr < 0 và 0 khách)
+    batch_04 = df.head(15).copy()
+    batch_04["adr"] = -999.0
+    batch_04["adults"] = 0
+    batch_04["children"] = 0
+    batch_04["babies"] = 0
+    batch_04_path = data_dir / "batch_04_corrupted_test.csv"
+    batch_04.to_csv(batch_04_path, index=False)
+    print(f"[+] Đã tạo {batch_04_path.name}: {len(batch_04):,} dòng lỗi (Dùng để test lọc/bắt lỗi ETL)")
 
 
 if __name__ == "__main__":
