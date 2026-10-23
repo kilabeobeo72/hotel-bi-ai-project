@@ -1,9 +1,9 @@
-# 🏨 MINI PROJECT: XÂY DỰNG HỆ THỐNG BUSINESS INTELLIGENCE TÍCH HỢP AI
+# MINI PROJECT: XÂY DỰNG HỆ THỐNG BUSINESS INTELLIGENCE TÍCH HỢP AI
 ## Chủ đề: Phân tích Nhu cầu Đặt phòng, Doanh thu & Chẩn đoán Hủy phòng Khách sạn (*Hotel Booking Demand*)
 
 ---
 
-### 👥 Thành viên thực hiện (Nhóm 4 người)
+### Thành viên thực hiện (Nhóm 4 người)
 1. **Đào Trung Kiên** *(Nhóm trưởng)* – Kiến trúc Kho dữ liệu (`dds`), `dbt` Staging, Power BI Semantic Model/DAX & Backend Generative AI.
 2. **Huỳnh Võ Đại Dương** – Data Ingestion (`Mage.ai` Full/Incremental Load), Power BI Diagnostic Dashboard & Lập lịch ETL tự động.
 3. **Phạm Ngọc Thanh** – `dbt` Dimensional Modeling (5 bảng `Dim` & 1 bảng `Fact`), Power BI Overview Dashboard & Dashboard Giám sát ETL.
@@ -11,7 +11,7 @@
 
 ---
 
-### 📂 Lộ trình & Bảng phân công chi tiết theo 3 Giai đoạn Seminar
+### Bảng phân công chi tiết theo 3 Giai đoạn Seminar
 Toàn bộ kế hoạch và bảng chia việc chi tiết của nhóm được tổ chức thành **1 Tài liệu Tổng quan (Master Schedule)** và **3 Tài liệu Giai đoạn (Side Docs)**:
 - 📋 **[Master Doc: BI Mini Project Schedule (Tổng quan & Điều phối)](./docs/schedule/00_BI_Mini_Project_Schedule_Master.md)**
 - 📘 **[Side Doc 1 – Seminar 1 (25/10 – 27/10/2026): Modeling & Nạp dữ liệu từ Source (Mage.ai + dbt + DW)](./docs/schedule/01_SideDoc_Seminar1_25Oct_ETL_DW.md)**
@@ -64,7 +64,7 @@ hotel-bi-ai-project/
 
 ---
 
-### 🚀 Hướng Dẫn Khởi Chạy Nhanh
+### Hướng Dẫn Khởi Chạy Nhanh
 
 ```bash
 # 1. Tạo file .env từ mẫu
