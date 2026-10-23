@@ -71,7 +71,7 @@ tags: []
 type: python
 uuid: hotel_ingestion_pipeline
 variables:
-  batch_file: batch_01_full_2015_2016.csv
-  load_mode: FULL
+  batch_file: batch_02_inc_2017_H1.csv
+  load_mode: INCREMENTAL
 variables_dir: /home/src/mage_data/lab_project
 widgets: []

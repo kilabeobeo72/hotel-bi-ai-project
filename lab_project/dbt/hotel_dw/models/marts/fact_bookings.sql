@@ -7,7 +7,6 @@
 WITH stg AS (
     SELECT
         *,
-        -- Chuẩn hóa biểu thức phân nhóm khách để JOIN chính xác với dim_customer
         CASE
             WHEN (COALESCE(children, 0) + COALESCE(babies, 0)) > 0 THEN 'Family'
             WHEN COALESCE(adults, 0) = 1 THEN 'Solo'

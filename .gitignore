@@ -9,3 +9,5 @@ data/*.csv
 !data/sample_hotel_bookings.csv
 .user.yml
 .ssh_tunnel/
+
+lab_project/.file_versions/
