@@ -1,4 +1,5 @@
 -- File: lab_project/dbt/hotel_dw/models/staging/stg_hotel_bookings.sql
+-- Phụ trách chính (Giai đoạn 1): Đào Trung Kiên
 {{ config(
     materialized='view'
 ) }}
@@ -10,8 +11,8 @@ WITH raw_source AS (
 
 cleaned AS (
     SELECT
-        -- Tạo khóa định danh duy nhất cho mỗi giao dịch đặt phòng
-        MD5(CAST(ROW_NUMBER() OVER () AS TEXT)) AS booking_key,
+        -- Tạo khóa định danh duy nhất cho mỗi giao dịch đặt phòng (ưu tiên booking_uid từ Mage.ai)
+        MD5(COALESCE(NULLIF(TRIM(CAST(booking_uid AS TEXT)), ''), CAST(ROW_NUMBER() OVER () AS TEXT))) AS booking_key,
 
         -- Thông tin khách sạn
         TRIM(hotel) AS hotel_name,
@@ -23,7 +24,7 @@ cleaned AS (
             CAST(arrival_date_year AS TEXT) || '-' ||
             TRIM(arrival_date_month) || '-' ||
             CAST(arrival_date_day_of_month AS TEXT),
-            'YYYY-Month-DD'
+            'YYYY-FMMonth-DD'
         ) AS arrival_date,
         CAST(reservation_status_date AS DATE) AS reservation_status_date,
         TRIM(reservation_status) AS reservation_status,
@@ -32,13 +33,13 @@ cleaned AS (
         CAST(GREATEST(COALESCE(stays_in_weekend_nights, 0), 0) AS INT) AS stays_in_weekend_nights,
         CAST(GREATEST(COALESCE(stays_in_week_nights, 0), 0) AS INT) AS stays_in_week_nights,
 
-        -- Thông tin số lượng khách
+        -- Thông tin số lượng khách (xử lý an toàn trường hợp 'NA' hoặc NULL)
         CAST(GREATEST(COALESCE(adults, 0), 0) AS INT) AS adults,
-        CAST(GREATEST(COALESCE(children, 0), 0) AS INT) AS children,
+        CAST(GREATEST(COALESCE(CAST(NULLIF(TRIM(CAST(children AS TEXT)), 'NA') AS NUMERIC)::INT, 0), 0) AS children,
         CAST(GREATEST(COALESCE(babies, 0), 0) AS INT) AS babies,
 
         -- Thông tin khách hàng
-        COALESCE(NULLIF(TRIM(country), ''), 'UNK') AS country_code,
+        UPPER(COALESCE(NULLIF(NULLIF(TRIM(country), ''), 'NULL'), 'UNK')) AS country_code,
         COALESCE(NULLIF(TRIM(customer_type), ''), 'Transient') AS customer_type,
         CAST(COALESCE(is_repeated_guest, 0) AS INT) AS is_repeated_guest,
 
@@ -52,11 +53,11 @@ cleaned AS (
             ELSE TRIM(distribution_channel)
         END AS distribution_channel,
         COALESCE(
-            NULLIF(REGEXP_REPLACE(CAST(agent AS TEXT), '\.0$', ''), 'NULL'),
+            NULLIF(NULLIF(REGEXP_REPLACE(TRIM(CAST(agent AS TEXT)), '\.0$', ''), 'NULL'), ''),
             'No Agent'
         ) AS agent_code,
         COALESCE(
-            NULLIF(REGEXP_REPLACE(CAST(company AS TEXT), '\.0$', ''), 'NULL'),
+            NULLIF(NULLIF(REGEXP_REPLACE(TRIM(CAST(company AS TEXT)), '\.0$', ''), 'NULL'), ''),
             'No Company'
         ) AS company_code,
 
@@ -74,6 +75,12 @@ cleaned AS (
         CAST(GREATEST(COALESCE(booking_changes, 0), 0) AS INT) AS booking_changes,
         CAST(GREATEST(COALESCE(total_of_special_requests, 0), 0) AS INT) AS total_of_special_requests
     FROM raw_source
+    WHERE CAST(COALESCE(adr, 0) AS NUMERIC) >= 0
+      AND (
+          COALESCE(adults, 0) +
+          COALESCE(CAST(NULLIF(TRIM(CAST(children AS TEXT)), 'NA') AS NUMERIC)::INT, 0) +
+          COALESCE(babies, 0)
+      ) > 0
 )
 
 SELECT * FROM cleaned

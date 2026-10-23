@@ -5,4 +5,5 @@ RUN pip3 install --no-cache-dir \
     psycopg2-binary \
     google-genai \
     streamlit \
-    plotly
+    plotly \
+    kagglehub
