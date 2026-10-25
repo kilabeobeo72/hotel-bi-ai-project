@@ -2,6 +2,7 @@ from mage_ai.settings.repo import get_repo_path
 from mage_ai.io.config import ConfigFileLoader
 from mage_ai.io.postgres import Postgres
 from pandas import DataFrame
+import os
 from os import path
 from datetime import datetime
 
@@ -19,28 +20,44 @@ def export_hotel_to_stage_and_log(df: DataFrame, **kwargs) -> None:
     config_path = path.join(get_repo_path(), 'io_config.yaml')
     config_profile = 'default'
 
-    load_mode = str(kwargs.get('load_mode', 'FULL')).upper()
-    batch_file = str(kwargs.get('batch_file', 'batch_01_full_2015_2016.csv'))
+    load_mode = str(kwargs.get('load_mode') or 'FULL').strip().upper()
+    batch_file = os.path.basename(str(kwargs.get('batch_file') or 'batch_01_full_2015_2016.csv'))
+    if load_mode not in ('FULL', 'INCREMENTAL'):
+        raise ValueError(f"load_mode không hợp lệ: '{load_mode}' (chỉ nhận FULL hoặc INCREMENTAL).")
 
     rows_extracted = int(df['rows_extracted_meta'].iloc[0]) if 'rows_extracted_meta' in df.columns else len(df)
     rows_rejected = int(df['rows_rejected_meta'].iloc[0]) if 'rows_rejected_meta' in df.columns else 0
     rows_valid = len(df)
+    # Có dòng bị loại nhưng vẫn nạp được phần còn lại => WARNING (control.etl_batch_log cho phép giá trị này)
+    success_status = 'WARNING' if rows_rejected > 0 else 'SUCCESS'
 
     export_df = df.drop(columns=['rows_extracted_meta', 'rows_rejected_meta'], errors='ignore')
-    if_exists_policy = 'replace' if load_mode == 'FULL' else 'append'
 
     started_at = datetime.utcnow()
     with Postgres.with_config(ConfigFileLoader(config_path, config_profile)) as loader:
         try:
-            loader.export(
-                export_df,
-                schema_name='stage',
-                table_name='raw_hotel_bookings',
-                index=False,
-                if_exists=if_exists_policy,
-                unique_constraints=['booking_uid'],
-                unique_conflict_method='UPDATE',
-            )
+            if load_mode == 'FULL':
+                # Mage xóa sạch bảng (DELETE, không DROP nên view dbt không bị hỏng) rồi nạp lại bằng COPY.
+                # Truyền unique_constraints để lần tạo bảng đầu tiên có UNIQUE(record_hash).
+                loader.export(
+                    export_df,
+                    schema_name='stage',
+                    table_name='raw_hotel_bookings',
+                    index=False,
+                    if_exists='replace',
+                    unique_constraints=['record_hash'],
+                )
+            else:
+                # Incremental: INSERT ... ON CONFLICT (record_hash) DO UPDATE => bản ghi cũ được cập nhật, không nhân đôi.
+                loader.export(
+                    export_df,
+                    schema_name='stage',
+                    table_name='raw_hotel_bookings',
+                    index=False,
+                    if_exists='append',
+                    unique_constraints=['record_hash'],
+                    unique_conflict_method='UPDATE',
+                )
             completed_at = datetime.utcnow()
             duration = (completed_at - started_at).total_seconds()
 
@@ -57,7 +74,7 @@ def export_hotel_to_stage_and_log(df: DataFrame, **kwargs) -> None:
                     (
                         'hotel_ingestion_pipeline', batch_file, load_mode,
                         rows_extracted, rows_valid, rows_rejected,
-                        'SUCCESS', None, started_at, completed_at, round(duration, 2)
+                        success_status, None, started_at, completed_at, round(duration, 2)
                     )
                 )
                 loader.conn.commit()
