@@ -9,3 +9,4 @@ lab_project/dbt/hotel_dw/dbt_packages/
 lab_project/dbt/hotel_dw/logs/
 lab_project/dbt/hotel_dw/.user.yml
 data/*.csv
+data/rejected/
