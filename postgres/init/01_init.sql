@@ -1,16 +1,13 @@
 -- ============================================================================
--- KHỞI TẠO CẤU TRÚC KHO DỮ LIỆU KHÁCH SẠN (KẾ THỪA 01_MAGE_DEMO_01)
+-- KHỞI TẠO CẤU TRÚC KHO DỮ LIỆU KHÁCH SẠN
 -- 3 Schemas chuẩn:
 --   1. stage   : Chứa dữ liệu thô nạp từ Mage.ai (Full & Incremental Load)
 --   2. dds     : Dimensional Data Store (Star Schema do dbt xây dựng)
 --   3. control : Ghi nhận trạng thái thực thi ETL, số dòng xử lý và lỗi phát sinh
--- ============================================================================
-
 CREATE SCHEMA IF NOT EXISTS stage;
 CREATE SCHEMA IF NOT EXISTS dds;
 CREATE SCHEMA IF NOT EXISTS control;
 
--- Bảng Audit Log theo dõi mỗi lần chạy ETL (Phục vụ Seminar 1 & Dashboard Giám sát Seminar 3)
 CREATE TABLE IF NOT EXISTS control.etl_batch_log (
     run_id              SERIAL PRIMARY KEY,
     pipeline_name       VARCHAR(100) NOT NULL,

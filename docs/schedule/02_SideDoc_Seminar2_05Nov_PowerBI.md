@@ -1,10 +1,7 @@
 # 📗 SIDE DOC 2: KẾ HOẠCH GIAI ĐOẠN 2 – SEMINAR 2 (28/10 – 05/11/2026)
 
 > **Chủ đề Seminar 2 (05/11/2026):** *Xây dựng ứng dụng BI trên Kho dữ liệu (`dds`), Nộp Báo cáo phân tích & Source, Video Demo & Trình bày sản phẩm*
-> **Thời gian thực hiện:** **28/10/2026 – 05/11/2026 (9 ngày)**
-> **Phạm vi yêu cầu đề bài giải quyết trong Giai đoạn 2:** Mục **3.4.A (Semantic Model)**, **3.4.B (Dashboard 1 Overview & Dashboard 2 Diagnostic)**, **Mục 4 (Báo cáo phân tích, Source code, File `.pbix`, Video demo)**.
 
----
 
 ## 1. MỤC TIÊU CỐT LÕI CỦA GIAI ĐOẠN 2
 
@@ -89,13 +86,4 @@ Sau khi đã có Kho dữ liệu chuẩn (`dds.fact_bookings` và 5 bảng `dds.
   3. Tổng hợp và trình bày **Báo cáo Phân tích (PDF)** hoàn chỉnh từ Chương 1 đến Chương 4 (chuẩn bị nộp lên Moodle ngày 05/11).
   4. Viết kịch bản và quay/dựng **Video Demo Giai đoạn 2 (5–7 phút)**: Minh họa từ kho dữ liệu PostgreSQL (`dds`), mô hình Star Schema trên Power BI, công thức DAX, đến thao tác lọc đa chiều trên Dashboard 1 và Drill-through tìm nguyên nhân trên Dashboard 2.
 
----
 
-## 3. LỊCH TRÌNH CHI TIẾT GIAI ĐOẠN 2 (28/10 – 05/11/2026)
-
-| Ngày | Mốc công việc cụ thể | Người thực hiện | Kết quả đầu ra (Deliverable) |
-| :---: | :--- | :--- | :--- |
-| **28/10 – 29/10** | - Kiên tạo file `powerbi/Hotel_BI_Dashboard.pbix`, nối DB `dds`, dựng Star Schema, Hierarchies và 12 DAX Measures.<br>- Kiên push file `.pbix` nền tảng lên GitHub. | Đào Trung Kiên | File `Hotel_BI_Dashboard.pbix` v1.0 có sẵn Model & DAX. |
-| **30/10 – 01/11** | - Thanh thiết kế **Dashboard 1 (Overview)**.<br>- Dương thiết kế **Dashboard 2 (Diagnostic + Drill-through)**.<br>- Ý viết SQL đối soát số liệu KPIs và chuẩn bị khung Báo cáo Phân tích. | Thanh, Dương, Ý | Hoàn thiện 2 trang Dashboard Overview & Diagnostic. |
-| **02/11 – 03/11** | - Ghép 2 trang Dashboard vào file `.pbix` chung, đồng bộ màu sắc (Theme khách sạn sang trọng: Xanh Navy & Vàng Gold).<br>- Hoàn thành toàn bộ nội dung Báo cáo Phân tích (PDF). | Cả nhóm | File `.pbix` v2.0 hoàn chỉnh & Báo cáo PDF bản nháp. |
-| **04/11 – 05/11** | - Quay Video Demo & Trình bày sản phẩm.<br>- Nộp Báo cáo phân tích, Source code và Video Demo đúng hạn Seminar 2 (05/11/2026). | Cả nhóm (Ý dựng video, Kiên kiểm duyệt cuối) | Nộp bài Seminar 2 thành công. |

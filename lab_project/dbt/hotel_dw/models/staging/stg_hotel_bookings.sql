@@ -1,5 +1,3 @@
--- File: lab_project/dbt/hotel_dw/models/staging/stg_hotel_bookings.sql
--- Phụ trách chính (Giai đoạn 1): Đào Trung Kiên
 {{ config(
     materialized='view'
 ) }}

@@ -1,10 +1,7 @@
-# 📙 SIDE DOC 3: KẾ HOẠCH GIAI ĐOẠN 3 – SEMINAR 3 (06/11 – 14/11/2026)
+# 📙 SIDE DOC 3: KẾ HOẠCH GIAI ĐOẠN 3 – SEMINAR 3 
 
 > **Chủ đề Seminar 3 (14/11/2026):** *Lập lịch ETL tự động, Dashboard theo dõi/giám sát kết quả mỗi lần ETL, và Giải thích kết quả phân tích bằng Generative AI*
-> **Thời gian thực hiện:** **06/11/2026 – 14/11/2026 (9 ngày)**
-> **Phạm vi yêu cầu đề bài giải quyết trong Giai đoạn 3:** Mục **3.1 (Vận hành & Lập lịch tự động)**, **Dashboard Giám sát ETL (`control`)**, **Mục 3.5 (Generative AI – AI-Assisted Analytics + Điểm cộng Hỏi đáp ngôn ngữ tự nhiên)**, và **Đóng gói 5 sản phẩm cuối kỳ**.
 
----
 
 ## 1. MỤC TIÊU CỐT LÕI CỦA GIAI ĐOẠN 3
 
@@ -74,13 +71,4 @@
      - **Tab 3 – AI ETL Log Inspector:** AI đọc bảng `control.etl_batch_log`, tóm tắt sức khỏe hệ thống ETL và gợi ý cách khắc phục nếu phát hiện batch gần nhất bị `FAILED`.
   2. Cùng cả nhóm hoàn thiện **Báo cáo PDF Cuối kỳ** và dựng **Video Demo Tổng hợp End-to-End** (minh họa đầy đủ từ Lập lịch ETL $\rightarrow$ Dashboard Giám sát ETL $\rightarrow$ Power BI Overview/Diagnostic $\rightarrow$ AI giải thích & hỏi đáp).
 
----
 
-## 3. LỊCH TRÌNH CHI TIẾT GIAI ĐOẠN 3 (06/11 – 14/11/2026)
-
-| Ngày | Mốc công việc cụ thể | Người thực hiện | Kết quả đầu ra (Deliverable) |
-| :---: | :--- | :--- | :--- |
-| **06/11 – 08/11** | - **Dương:** Cấu hình Mage Triggers lập lịch tự động & sinh dữ liệu log thực tế vào `control.etl_batch_log`.<br>- **Kiên:** Viết xong module kết nối Gemini API & Grounded Prompt đọc dữ liệu từ `dds` & `control`. | Dương, Kiên | Pipeline tự chạy theo lịch; hàm Python gọi Gemini trả về phân tích chuẩn xác. |
-| **09/11 – 10/11** | - **Thanh:** Thiết kế xong **Dashboard 3 (ETL Monitoring)** trên Power BI.<br>- **Ý:** Xây dựng xong giao diện Streamlit `ai_assistant/app.py` gồm 3 Tab (Summary, Diagnostic Explainer, NL2SQL Chat). | Thanh, Ý | File `.pbix` có đủ 3 Dashboards; Web App AI chạy mượt tại port `8501`. |
-| **11/11 – 12/11** | - Kiểm thử tích hợp toàn hệ thống: Mage Trigger tự chạy nạp batch mới $\rightarrow$ Dashboard 3 cập nhật log $\rightarrow$ Dashboard 1 & 2 cập nhật KPI $\rightarrow$ AI Assistant đọc số liệu mới và giải thích.<br>- Hoàn thiện `README.md` hướng dẫn chạy hệ thống chỉ với 2 lệnh. | Cả nhóm | Toàn bộ source code sạch sẽ trên GitHub `main`. |
-| **13/11 – 14/11** | - Xuất file Báo cáo PDF hoàn chỉnh.<br>- Quay Video Demo Seminar 3 & Nộp đủ 5 hạng mục sản phẩm đúng hạn **14/11/2026**. | Cả nhóm | Hoàn thành xuất sắc 100% Mini Project môn BI! |

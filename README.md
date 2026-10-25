@@ -4,10 +4,10 @@
 ---
 
 ### 👥 Thành viên thực hiện (Nhóm 4 người)
-1. **Đào Trung Kiên** *(Nhóm trưởng)* – Kiến trúc Kho dữ liệu (`dds`), `dbt` Staging, Power BI Semantic Model/DAX & Backend Generative AI.
-2. **Huỳnh Võ Đại Dương** – Data Ingestion (`Mage.ai` Full/Incremental Load), Power BI Diagnostic Dashboard & Lập lịch ETL tự động.
-3. **Phạm Ngọc Thanh** – `dbt` Dimensional Modeling (5 bảng `Dim` & 1 bảng `Fact`), Power BI Overview Dashboard & Dashboard Giám sát ETL.
-4. **Thạch Ý** – Cơ chế Audit Log (`control.etl_batch_log`), `dbt test` & `dbt docs`, Ứng dụng Web AI Assistant (Streamlit + NL2SQL) & Báo cáo/Video Demo.
+1. **Đào Trung Kiên** *(Nhóm trưởng)* – 23120055
+2. **Huỳnh Võ Đại Dương** – 23120033
+3. **Phạm Ngọc Thanh** – 23120087
+4. **Thạch Ý** – 23120411
 
 ---
 
@@ -29,12 +29,12 @@ Toàn bộ kế hoạch và bảng chia việc chi tiết của nhóm được t
 
 ---
 
-### 🏗️ Cấu Trúc Dự Án (Mở rộng từ mẫu `01_mage_demo_01` của môn học)
+### Cấu Trúc Dự Án
 
 ```text
 hotel-bi-ai-project/
 ├── compose.yaml                         # Docker chạy PostgreSQL 17 (port 5432) & Mage.ai (port 6789)
-├── Dockerfile                           # Cài đặt mage-ai, dbt-postgres, streamlit, google-genai
+├── Dockerfile                           # Cài đặt mage-ai, dbt-postgres, streamlit,google-genai
 ├── .env.example                         # Mẫu biến môi trường
 ├── postgres/
 │   └── init/

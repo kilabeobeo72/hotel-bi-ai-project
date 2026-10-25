@@ -6,9 +6,8 @@
 
 ---
 
-## 1. MỤC TIÊU CỐT LÕI CỦA GIAI ĐOẠN 1 (7 NGÀY: 19/10 – 25/10)
+## 1. MỤC TIÊU CỐT LÕI CỦA GIAI ĐOẠN 1 
 
-Khi giảng viên gọi tên nhóm trong buổi **Seminar 1 (27/10)**, nhóm phải trình diễn (live demo hoặc video/slide) được trọn vẹn 4 điểm sau:
 1. **Bài toán & Thiết kế Dimensional Model (Star Schema):** Giải thích được tại sao chọn bộ dữ liệu *Hotel Booking Demand (32 cột)*, xác định đúng **Grain** của bảng Fact, và chiếu sơ đồ **Star Schema** gồm `dds.fact_bookings` nối với 5 bảng `dds.dim_*`.
 2. **Data Ingestion bằng Mage.ai vào vùng `stage`:**
    - Chạy thử nạp **Full Load** (`batch_01_full_2015_2016.csv` ~ 79.000 dòng) và **Incremental Load** (`batch_02_inc_2017_H1.csv`, `batch_03_inc_2017_H2.csv` ~ 40.000 dòng).
@@ -21,9 +20,8 @@ Khi giảng viên gọi tên nhóm trong buổi **Seminar 1 (27/10)**, nhóm ph�
 
 ---
 
-## 2. PHÂN CÔNG THEO HẠNG MỤC CÔNG VIỆC (KHÔNG CHỜ ĐỢI NHAU)
+## 2. PHÂN CÔNG THEO HẠNG MỤC CÔNG VIỆC 
 
-Để không ai phải chờ người khác làm xong mới bắt đầu, **ngay trong tối Ngày 1 (19/10)**, cả nhóm sử dụng chung **"Hợp đồng tên bảng & cột (Data Contract)"** đã được khởi tạo sẵn trong GitHub Repo.
 
 ### HẠNG MỤC 1.1: Thiết lập Hạ tầng Docker, Schema Database & dbt Staging
 - **Người phụ trách chính:** **Đào Trung Kiên** *(Nhóm trưởng)*
@@ -91,15 +89,3 @@ Khi giảng viên gọi tên nhóm trong buổi **Seminar 1 (27/10)**, nhóm ph�
 - **Nhiệm vụ Tài liệu (Document):**
   - Viết **Chương 3 – Mục 3.1.4 (Cơ chế Audit Log & Xử lý lỗi trong schema `control`)**, **Mục 3.2.2 (Kiểm tra chất lượng dữ liệu với dbt tests & Tài liệu hóa dbt docs)**, và ghép toàn bộ bài viết của 4 thành viên thành bản **Báo cáo Giai đoạn 1 + Slide thuyết trình Seminar 1**.
 
----
-
-## 3. LỊCH TRÌNH 7 NGÀY CHI TIẾT CHO SEMINAR 1 (19/10 – 25/10/2026)
-
-| Ngày | Mốc công việc cụ thể | Người thực hiện | Kết quả đầu ra (Deliverable) |
-| :---: | :--- | :--- | :--- |
-| **Ngày 1**<br>*(19/10 - T2)* | - Duyệt kế hoạch, clone GitHub Repo, tải `hotel_bookings.csv` từ Kaggle.<br>- Chạy thử `docker compose up -d` đảm bảo máy cả 4 người đều vào được Mage (`localhost:6789`) và Postgres (`localhost:5432`). | Cả nhóm (Kiên hỗ trợ cài đặt) | 4 thành viên đều chạy được Docker & truy cập DB thành công. |
-| **Ngày 2**<br>*(20/10 - T3)* | - **Kiên:** Hoàn tất `01_init.sql` và code xong `stg_hotel_bookings.sql`.<br>- **Dương:** Chạy script `split_batches.py` tạo 4 file CSV batch.<br>- **Thanh:** Vẽ xong sơ đồ Star Schema trên `dbdiagram.io`.<br>- **Ý:** Tạo bảng `control.etl_batch_log` và khung `schema.yml`. | Kiên, Dương, Thanh, Ý | Có sẵn dữ liệu mẫu trong `stage` và sơ đồ Star Schema chuẩn. |
-| **Ngày 3-4**<br>*(21-22/10)* | - **Dương:** Code xong 3 block Mage.ai (Full Load & Incremental Load).<br>- **Thanh:** Code xong 5 bảng `dim_*` và 1 bảng `fact_bookings` trong `dbt`.<br>- **Ý:** Tích hợp hàm ghi log vào Mage.ai & viết xong toàn bộ `dbt test`. | Dương, Thanh, Ý (Kiên review & ghép nối) | Chạy thông mạch từ CSV $\rightarrow$ Mage (`stage` + `control`) $\rightarrow$ `dbt run` (`dds`). |
-| **Ngày 5**<br>*(23/10 - T6)* | - Chạy kiểm thử toàn trình (End-to-End):<br>  1. Chạy Full Load Batch 1 $\rightarrow$ `dbt build`.<br>  2. Chạy Incremental Load Batch 2 & 3 $\rightarrow$ `dbt build`.<br>  3. Chạy thử Batch 4 (lỗi) $\rightarrow$ Kiểm tra `control.etl_batch_log` bắt được lỗi.<br>- Chạy `dbt docs generate` & chụp ảnh màn hình kết quả. | Cả nhóm | Bộ ảnh chụp màn hình Log, Database `dds`, `dbt test PASS`, `dbt docs DAG`. |
-| **Ngày 6**<br>*(24/10 - T7)* | - Hoàn thiện các mục Báo cáo Giai đoạn 1 và làm Slide trình bày Seminar 1 (khoảng 12–15 slides ngắn gọn, nhiều hình kiến trúc & demo). | Cả nhóm (Ý tổng hợp) | File Báo cáo GĐ1 + Slide Seminar 1. |
-| **Ngày 7**<br>*(25/10 - CN)* | - Họp nhóm 45 phút diễn tập chạy demo trực tiếp (phòng khi ngày 27/10 giảng viên gọi ngẫu nhiên bất kỳ ai trong nhóm cũng trả lời được).<br>- Đẩy toàn bộ code sạch lên nhánh `main` của GitHub. | Cả nhóm | Sẵn sàng 100% cho hạn 25/10 & Seminar 1 ngày 27/10. |
