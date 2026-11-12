@@ -1,6 +1,4 @@
-# HƯỚNG DẪN COPY-PASTE 12 DAX MEASURES CHUẨN (SEMINAR 2)
-
-Tất cả 12 công thức dưới đây đã được tạo sẵn trong bảng `_Measures` của file `powerbi/Hotel_BI_Dashboard.pbix`:
+# 12 DAX MEASURES CHUẨN
 
 ```dax
 Total Bookings = COUNTROWS(fact_bookings)
