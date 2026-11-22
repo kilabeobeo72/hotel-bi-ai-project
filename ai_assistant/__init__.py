@@ -1,7 +1,3 @@
-"""
-Package `ai_assistant`: Core Generative AI Engine & Grounded DB Context (Seminar 3).
-"""
-
 from ai_assistant.db_context import (
     build_grounded_context_markdown,
     execute_safe_readonly_sql,

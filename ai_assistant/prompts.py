@@ -1,18 +1,3 @@
-"""
-Module: ai_assistant/prompts.py
-Người phụ trách: Đào Trung Kiên (Hạng mục 3.3 - Seminar 3)
-Chức năng:
-  - Tích hợp Google Gemini API (`google-genai` SDK, model `gemini-3.8-flash`) với cơ chế
-    Grounded Analytics Prompting (cam kết 0% Hallucination – mọi nhận định đều trích dẫn
-    trực tiếp từ dữ liệu thực trong schema `dds` và `control.etl_batch_log`).
-  - Cung cấp 4 hàm Backend AI chuẩn cho giao diện Streamlit (`ai_assistant/app.py` của Thạch Ý):
-      1. `generate_executive_summary(...)`: Tạo bản tóm tắt điều hành từ KPIs thật & trạng thái ETL.
-      2. `explain_anomaly_and_trends(...)`: Giải thích nguyên nhân biến động/hủy phòng theo lát cắt.
-      3. `answer_natural_language_query(...)`: Chuyển câu hỏi tiếng Việt sang SQL (NL2SQL),
-         chạy trên PostgreSQL `dds`/`control` và diễn giải kết quả.
-      4. `inspect_etl_health(...)`: Phân tích nhật ký `control.etl_batch_log` và gợi ý khắc phục lỗi.
-"""
-
 import json
 import os
 import re
@@ -27,7 +12,6 @@ from ai_assistant.db_context import (
     fetch_etl_batch_logs,
 )
 
-# Model chuẩn theo SDK google-genai hiện hành (thay thế cho gemini-2.5-flash đã deprecated)
 DEFAULT_GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
 
 GROUNDED_SYSTEM_INSTRUCTION = """Bạn là Chuyên gia Phân tích Business Intelligence & DataOps (AI BI Copilot) cho hệ thống Kho dữ liệu Khách sạn (Hotel Booking Demand Data Warehouse).
@@ -65,7 +49,6 @@ CẤU TRÚC SCHEMA KHO DỮ LIỆU POSTGRESQL (`dw_lab`):
 
 
 def _load_api_key(explicit_api_key: Optional[str] = None) -> str:
-    """Đọc GEMINI_API_KEY từ tham số truyền vào, biến môi trường hoặc file .env gốc của dự án."""
     if explicit_api_key and explicit_api_key.strip() and explicit_api_key.strip() != "your_gemini_api_key_here":
         return explicit_api_key.strip()
 
@@ -94,10 +77,6 @@ def _call_gemini(
     api_key: Optional[str] = None,
     temperature: float = 0.1,
 ) -> str:
-    """
-    Gọi Google Gemini Interactions API qua SDK `google-genai` chuẩn.
-    Sử dụng `temperature=0.1` thấp để đảm bảo tính nhất quán và bám sát số liệu Grounded Context.
-    """
     resolved_key = _load_api_key(api_key)
     client = genai.Client(api_key=resolved_key)
     interaction = client.interactions.create(
@@ -116,11 +95,6 @@ def generate_executive_summary(
     market_segment: Optional[str] = None,
     api_key: Optional[str] = None,
 ) -> str:
-    """
-    Chức năng 1 – AI Executive Summary:
-    Tự động tổng hợp bản tóm tắt điều hành từ KPIs thật trong `dds` và trạng thái ETL mới nhất
-    trong `control.etl_batch_log`.
-    """
     grounded_context = build_grounded_context_markdown(
         year=year,
         hotel_name=hotel_name,
@@ -149,11 +123,6 @@ def explain_anomaly_and_trends(
     user_question: Optional[str] = None,
     api_key: Optional[str] = None,
 ) -> str:
-    """
-    Chức năng 2 – AI Diagnostic & Trend Explainer:
-    Giải thích sâu nguyên nhân các xu hướng, biến động bất thường hoặc vấn đề hủy phòng
-    trên Dashboard dựa trên bảng phân rã đa chiều từ Data Warehouse.
-    """
     grounded_context = build_grounded_context_markdown(
         year=year,
         hotel_name=hotel_name,
@@ -181,13 +150,6 @@ def answer_natural_language_query(
     question: str,
     api_key: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """
-    Chức năng 3 (Điểm cộng khuyến khích) – Hỏi đáp bằng Ngôn ngữ Tự nhiên (Natural Language Q&A / NL2SQL):
-      1. Chuyển câu hỏi tiếng Việt của người dùng thành câu lệnh PostgreSQL `SELECT` chuẩn trên `dds` / `control`.
-      2. Thực thi câu lệnh SQL an toàn qua `execute_safe_readonly_sql`.
-      3. Đưa bảng kết quả thật vào Gemini để diễn giải câu trả lời tiếng Việt có kiểm chứng.
-    Trả về dict gồm: `{"sql": str, "dataframe": pd.DataFrame, "explanation": str}`.
-    """
     sql_gen_system = f"""Bạn là chuyên gia PostgreSQL cho hệ thống Data Warehouse Khách sạn.
 Nhiệm vụ của bạn là chuyển câu hỏi tiếng Việt của người dùng thành DUY NHẤT 1 câu lệnh SQL SELECT hợp lệ trên PostgreSQL.
 {DW_SCHEMA_REFERENCE}
@@ -234,11 +196,6 @@ Hãy trả lời câu hỏi của người dùng bằng tiếng Việt ngắn g�
 
 
 def inspect_etl_health(api_key: Optional[str] = None) -> str:
-    """
-    Chức năng 4 – AI ETL Log Inspector:
-    Đọc bảng `control.etl_batch_log`, tóm tắt sức khỏe hệ thống Data Ingestion (Mage.ai)
-    và chẩn đoán nguyên nhân / cách khắc phục cho các batch có trạng thái WARNING hoặc FAILED.
-    """
     etl_data = fetch_etl_batch_logs(limit=20)
     prompt = f"""Dựa trên dữ liệu nhật ký thực thi ETL từ bảng `control.etl_batch_log` dưới đây:
 

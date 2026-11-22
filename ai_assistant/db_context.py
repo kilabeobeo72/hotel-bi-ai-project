@@ -1,16 +1,3 @@
-"""
-Module: ai_assistant/db_context.py
-Người phụ trách: Đào Trung Kiên (Hạng mục 3.3 - Seminar 3)
-Chức năng:
-  - Kết nối trực tiếp vào PostgreSQL Data Warehouse (schema `dds` và `control`).
-  - Truy xuất các bảng số liệu tổng hợp (KPIs, xu hướng tháng, phân rã hủy phòng theo
-    kênh bán, chính sách cọc, nhóm Lead Time, và nhật ký chạy ETL `control.etl_batch_log`).
-  - Đóng gói dữ liệu thực tế thành Grounded Context (Markdown/JSON) chống Hallucination
-    để cung cấp cho Google Gemini API.
-  - Cung cấp hàm `execute_safe_readonly_sql` (chỉ cho phép SELECT trên `dds` và `control`)
-    hỗ trợ tính năng Hỏi đáp ngôn ngữ tự nhiên (NL2SQL).
-"""
-
 import json
 import os
 import re
@@ -22,11 +9,6 @@ from psycopg2.extras import RealDictCursor
 
 
 def get_db_connection():
-    """
-    Khởi tạo kết nối tới PostgreSQL Data Warehouse (`dw_lab`).
-    Tự động ưu tiên biến môi trường hoặc thử cổng 5433 (chạy trên máy host Windows)
-    rồi fallback sang cổng 5432 (chạy bên trong Docker container).
-    """
     db_name = os.environ.get("POSTGRES_DB", "dw_lab")
     db_user = os.environ.get("POSTGRES_USER", "postgres")
     db_password = os.environ.get("POSTGRES_PASSWORD", "postgres")
@@ -65,7 +47,6 @@ def _build_where_clause(
     hotel_name: Optional[str] = None,
     market_segment: Optional[str] = None,
 ) -> Tuple[str, List[Any]]:
-    """Tạo mệnh đề WHERE động theo bộ lọc người dùng chọn trên giao diện."""
     conditions: List[str] = []
     params: List[Any] = []
 
@@ -90,7 +71,6 @@ def fetch_kpi_overview(
     hotel_name: Optional[str] = None,
     market_segment: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Lấy bộ 12 chỉ số KPI tổng quan từ schema `dds` theo bộ lọc."""
     where_sql, params = _build_where_clause(year, hotel_name, market_segment)
     sql = f"""
         SELECT
@@ -130,7 +110,6 @@ def fetch_yearly_and_monthly_trends(
     hotel_name: Optional[str] = None,
     market_segment: Optional[str] = None,
 ) -> Dict[str, List[Dict[str, Any]]]:
-    """Lấy xu hướng đặt phòng, doanh thu thực, doanh thu mất và tỷ lệ hủy theo Năm và Tháng."""
     where_sql, params = _build_where_clause(year, hotel_name, market_segment)
 
     yearly_sql = f"""
@@ -185,14 +164,6 @@ def fetch_diagnostic_breakdowns(
     hotel_name: Optional[str] = None,
     market_segment: Optional[str] = None,
 ) -> Dict[str, List[Dict[str, Any]]]:
-    """
-    Lấy dữ liệu phân rã nguyên nhân hủy phòng (Diagnostic Analytics) theo:
-      1. Loại khách sạn (`hotel_name`)
-      2. Phân khúc kênh bán (`market_segment`)
-      3. Chính sách đặt cọc (`deposit_type`)
-      4. Nhóm thời gian đặt trước (`lead_time_group`)
-      5. Tác động của đổi/nâng hạng phòng (`is_room_upgraded`) và yêu cầu đặc biệt (`total_of_special_requests`)
-    """
     where_sql, params = _build_where_clause(year, hotel_name, market_segment)
 
     queries = {
@@ -297,9 +268,6 @@ def fetch_diagnostic_breakdowns(
 
 
 def fetch_etl_batch_logs(limit: int = 15) -> Dict[str, Any]:
-    """
-    Lấy thống kê tổng quan và lịch sử các lần chạy ETL gần nhất từ bảng `control.etl_batch_log`.
-    """
     summary_sql = """
         SELECT
             COUNT(*) AS total_runs,
@@ -352,10 +320,6 @@ def build_grounded_context_markdown(
     hotel_name: Optional[str] = None,
     market_segment: Optional[str] = None,
 ) -> str:
-    """
-    Đóng gói toàn bộ dữ liệu thực tế từ `dds` và `control.etl_batch_log` thành tài liệu
-    Markdown có cấu trúc rõ ràng để truyền vào Prompt cho Gemini API (0% Hallucination).
-    """
     kpis = fetch_kpi_overview(year, hotel_name, market_segment)
     trends = fetch_yearly_and_monthly_trends(year, hotel_name, market_segment)
     diag = fetch_diagnostic_breakdowns(year, hotel_name, market_segment)
@@ -413,11 +377,6 @@ def build_grounded_context_markdown(
 
 
 def execute_safe_readonly_sql(sql_query: str) -> pd.DataFrame:
-    """
-    Thực thi câu lệnh SQL chỉ đọc (SELECT / WITH ... SELECT) phục vụ tính năng
-    Hỏi đáp bằng ngôn ngữ tự nhiên (NL2SQL).
-    Chặn tuyệt đối mọi từ khóa thay đổi dữ liệu hoặc cấu trúc DB.
-    """
     cleaned = sql_query.strip().rstrip(";")
     forbidden = re.compile(
         r"\b(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|CREATE|GRANT|REVOKE|COPY|EXECUTE)\b",
