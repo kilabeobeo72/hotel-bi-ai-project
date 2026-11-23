@@ -24,16 +24,27 @@
 
 ```text
 hotel-bi-ai-project/
-├── compose.yaml                         # Docker chạy PostgreSQL 17 & Mage.ai (port 6789)
+├── compose.yaml                         # Docker chạy PostgreSQL 17 (5433:5432) & Mage.ai (port 6789)
 ├── Dockerfile                           # Cài đặt mage-ai, dbt-postgres
-├── .env.example                         # Mẫu biến môi trường
+├── .env.example                         # Mẫu biến môi trường (PostgreSQL & GEMINI_API_KEY)
 ├── postgres/
-│   └── init/
-│       └── 01_init.sql                  # Tạo 3 schema: stage, dds, control + bảng control.etl_batch_log
+│   ├── init/
+│   │   └── 01_init.sql                  # Tạo 3 schema: stage, dds, control + bảng control.etl_batch_log
+│   └── seed/
+│       └── seed_etl_history.sql         # Kịch bản dữ liệu lịch sử chạy ETL phục vụ Dashboard giám sát
 ├── data/
 │   └── split_batches.py                 # Script chia CSV gốc thành các batch Full & Incremental
 ├── schema/
 │   └── star_schema.png                  # Sơ đồ thiết kế kho dữ liệu Star Schema (dds)
+├── powerbi/
+│   ├── Hotel_BI_Dashboard.pbix          # Semantic Model, 12 DAX Measures & 03 Dashboards (Overview, Diagnostic, ETL Monitor)
+│   ├── DAX_MEASURES_GUIDE.md            # Tài liệu công thức 12 DAX Measures
+│   └── README.md                        # Bảng số liệu chuẩn đối soát trên tầng dds
+├── ai_assistant/
+│   ├── db_context.py                    # Truy xuất Grounded Context từ dds & control + Read-only SQL Guardrail
+│   ├── prompts.py                       # Tích hợp Google Gemini API (Summary, Diagnostic Explainer, NL2SQL, ETL Inspector)
+│   ├── app.py                           # Giao diện Web App Streamlit 3 Tab (AI Copilot)
+│   └── requirements.txt                 # Thư viện Python cho ứng dụng AI Assistant
 └── lab_project/                         # Project Mage.ai
     ├── io_config.yaml                   # Cấu hình kết nối PostgreSQL
     ├── data_loaders/
@@ -42,6 +53,12 @@ hotel-bi-ai-project/
     │   └── validate_hotel_data.py       # Kiểm tra cấu trúc và lọc dòng lỗi dữ liệu
     ├── data_exporters/
     │   └── load_stage_hotel.py          # Nạp vào stage.raw_hotel_bookings & ghi log vào control.etl_batch_log
+    ├── custom/
+    │   └── run_dbt_build.py             # Tự động kích hoạt dbt run & dbt test sau khi nạp stage
+    ├── pipelines/
+    │   └── hotel_ingestion_pipeline/
+    │       ├── metadata.yaml
+    │       └── triggers.yaml            # Cấu hình lập lịch ETL tự động (Schedules / Triggers)
     └── dbt/
         └── hotel_dw/                    # Project dbt chuyển đổi từ stage sang dds (Star Schema)
             ├── dbt_project.yml
@@ -58,7 +75,7 @@ hotel-bi-ai-project/
 ### Hướng Dẫn Khởi Chạy Nhanh
 
 ```bash
-# 1. Tạo file .env từ mẫu
+# 1. Tạo file .env từ mẫu và điền GEMINI_API_KEY
 cp .env.example .env
 
 # 2. Khởi chạy Docker (PostgreSQL 17 + Mage.ai + dbt)
@@ -67,4 +84,8 @@ docker compose up -d --build
 # 3. Truy cập Mage.ai tại: http://localhost:6789
 # 4. Chạy dbt tạo Star Schema (bên trong container lab-mage):
 docker exec -it lab-mage bash -c "cd /home/src/lab_project/dbt/hotel_dw && dbt run --profiles-dir . && dbt test --profiles-dir ."
+
+# 5. Khởi chạy Giao diện Web AI-Assisted Analytics Copilot (Streamlit):
+pip install -r ai_assistant/requirements.txt
+streamlit run ai_assistant/app.py
 ```
