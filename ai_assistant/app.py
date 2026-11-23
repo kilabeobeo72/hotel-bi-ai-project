@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 
+import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -116,13 +117,6 @@ st.markdown(
             border-color: #1e3a8a;
             color: #1e3a8a;
         }
-        .panel-card {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 18px 20px;
-            margin-top: 12px;
-        }
     </style>
     """,
     unsafe_allow_html=True,
@@ -223,19 +217,181 @@ with tab1:
             market_segment=segment_filter,
         )
 
-        with st.expander("Bảng số liệu Grounded Context trích xuất từ Data Warehouse (dds)", expanded=False):
+        df_monthly = pd.DataFrame(trends["monthly"])
+        df_segment = pd.DataFrame(diag["by_market_segment"])
+        df_lead = pd.DataFrame(diag["by_lead_time_group"])
+        df_deposit = pd.DataFrame(diag["by_deposit_type"])
+
+        st.markdown("#### Trực quan hóa dữ liệu tổng quan & chẩn đoán hủy phòng (Data Warehouse dds)")
+
+        row1_col1, row1_col2 = st.columns(2, gap="medium")
+
+        with row1_col1:
+            with st.container(border=True):
+                st.markdown("**1. Xu hướng Doanh thu thực thu, Thất thoát và Tỷ lệ hủy theo Tháng**")
+                if not df_monthly.empty:
+                    df_monthly["actual_revenue"] = pd.to_numeric(df_monthly["actual_revenue"])
+                    df_monthly["revenue_loss"] = pd.to_numeric(df_monthly["revenue_loss"])
+                    df_monthly["cancellation_rate_pct"] = pd.to_numeric(df_monthly["cancellation_rate_pct"])
+
+                    rev_melted = df_monthly.melt(
+                        id_vars=["month", "month_name"],
+                        value_vars=["actual_revenue", "revenue_loss"],
+                        var_name="metric",
+                        value_name="amount",
+                    )
+                    rev_melted["Loại doanh thu"] = rev_melted["metric"].map({
+                        "actual_revenue": "Doanh thu thực thu ($)",
+                        "revenue_loss": "Doanh thu mất do hủy ($)",
+                    })
+
+                    bars = (
+                        alt.Chart(rev_melted)
+                        .mark_bar()
+                        .encode(
+                            x=alt.X("month_name:N", sort=alt.EncodingSortField(field="month", order="ascending"), title="Tháng"),
+                            y=alt.Y("amount:Q", title="Doanh thu ($)"),
+                            color=alt.Color(
+                                "Loại doanh thu:N",
+                                scale=alt.Scale(
+                                    domain=["Doanh thu thực thu ($)", "Doanh thu mất do hủy ($)"],
+                                    range=["#1e3a8a", "#dc2626"],
+                                ),
+                                legend=alt.Legend(orient="top"),
+                            ),
+                            xOffset="Loại doanh thu:N",
+                            tooltip=["month_name", "Loại doanh thu", alt.Tooltip("amount:Q", format=",.0f")],
+                        )
+                    )
+                    line = (
+                        alt.Chart(df_monthly)
+                        .mark_line(color="#d97706", strokeWidth=2.5, point=True)
+                        .encode(
+                            x=alt.X("month_name:N", sort=alt.EncodingSortField(field="month", order="ascending")),
+                            y=alt.Y("cancellation_rate_pct:Q", title="Tỷ lệ hủy (%)"),
+                            tooltip=["month_name", alt.Tooltip("cancellation_rate_pct:Q", title="Tỷ lệ hủy (%)")],
+                        )
+                    )
+                    chart_monthly = alt.layer(bars, line).resolve_scale(y="independent").properties(height=280)
+                    st.altair_chart(chart_monthly, use_container_width=True)
+
+        with row1_col2:
+            with st.container(border=True):
+                st.markdown("**2. Doanh thu thực thu vs Doanh thu mất do hủy theo Phân khúc kênh bán**")
+                if not df_segment.empty:
+                    seg_agg = (
+                        df_segment.groupby("market_segment", as_index=False)
+                        .agg(
+                            total_bookings=("total_bookings", "sum"),
+                            canceled_bookings=("canceled_bookings", "sum"),
+                            actual_revenue=("actual_revenue", "sum"),
+                            revenue_loss=("revenue_loss", "sum"),
+                        )
+                    )
+                    seg_agg["actual_revenue"] = pd.to_numeric(seg_agg["actual_revenue"])
+                    seg_agg["revenue_loss"] = pd.to_numeric(seg_agg["revenue_loss"])
+                    seg_melted = seg_agg.melt(
+                        id_vars=["market_segment"],
+                        value_vars=["actual_revenue", "revenue_loss"],
+                        var_name="metric",
+                        value_name="amount",
+                    )
+                    seg_melted["Loại doanh thu"] = seg_melted["metric"].map({
+                        "actual_revenue": "Doanh thu thực thu ($)",
+                        "revenue_loss": "Doanh thu mất do hủy ($)",
+                    })
+                    chart_seg = (
+                        alt.Chart(seg_melted)
+                        .mark_bar()
+                        .encode(
+                            y=alt.Y("market_segment:N", sort="-x", title="Phân khúc"),
+                            x=alt.X("amount:Q", title="Doanh thu ($)"),
+                            color=alt.Color(
+                                "Loại doanh thu:N",
+                                scale=alt.Scale(
+                                    domain=["Doanh thu thực thu ($)", "Doanh thu mất do hủy ($)"],
+                                    range=["#1e3a8a", "#dc2626"],
+                                ),
+                                legend=alt.Legend(orient="top"),
+                            ),
+                            tooltip=["market_segment", "Loại doanh thu", alt.Tooltip("amount:Q", format=",.0f")],
+                        )
+                        .properties(height=280)
+                    )
+                    st.altair_chart(chart_seg, use_container_width=True)
+
+        row2_col1, row2_col2 = st.columns(2, gap="medium")
+
+        with row2_col1:
+            with st.container(border=True):
+                st.markdown("**3. Chẩn đoán Tỷ lệ hủy phòng (%) và Thất thoát theo Nhóm Lead Time**")
+                if not df_lead.empty:
+                    df_lead["cancellation_rate_pct"] = pd.to_numeric(df_lead["cancellation_rate_pct"])
+                    df_lead["revenue_loss"] = pd.to_numeric(df_lead["revenue_loss"])
+
+                    lead_bars = (
+                        alt.Chart(df_lead)
+                        .mark_bar(color="#3b82f6")
+                        .encode(
+                            x=alt.X("lead_time_group:N", sort=None, title="Nhóm thời gian đặt trước"),
+                            y=alt.Y("revenue_loss:Q", title="Doanh thu thất thoát ($)"),
+                            tooltip=[
+                                "lead_time_group",
+                                alt.Tooltip("total_bookings:Q", title="Tổng đơn", format=","),
+                                alt.Tooltip("cancellation_rate_pct:Q", title="Tỷ lệ hủy (%)"),
+                                alt.Tooltip("revenue_loss:Q", title="Doanh thu mất ($)", format=",.0f"),
+                            ],
+                        )
+                    )
+                    lead_line = (
+                        alt.Chart(df_lead)
+                        .mark_line(color="#dc2626", strokeWidth=2.5, point=True)
+                        .encode(
+                            x=alt.X("lead_time_group:N", sort=None),
+                            y=alt.Y("cancellation_rate_pct:Q", title="Tỷ lệ hủy (%)"),
+                        )
+                    )
+                    chart_lead = alt.layer(lead_bars, lead_line).resolve_scale(y="independent").properties(height=260)
+                    st.altair_chart(chart_lead, use_container_width=True)
+
+        with row2_col2:
+            with st.container(border=True):
+                st.markdown("**4. Tỷ lệ hủy phòng (%) và Số lượng đơn theo Chính sách đặt cọc**")
+                if not df_deposit.empty:
+                    df_deposit["cancellation_rate_pct"] = pd.to_numeric(df_deposit["cancellation_rate_pct"])
+                    df_deposit["total_bookings"] = pd.to_numeric(df_deposit["total_bookings"])
+
+                    chart_dep = (
+                        alt.Chart(df_deposit)
+                        .mark_bar(color="#1e3a8a")
+                        .encode(
+                            x=alt.X("deposit_type:N", title="Loại đặt cọc"),
+                            y=alt.Y("cancellation_rate_pct:Q", title="Tỷ lệ hủy phòng (%)"),
+                            tooltip=[
+                                "deposit_type",
+                                alt.Tooltip("total_bookings:Q", title="Tổng số đơn", format=","),
+                                alt.Tooltip("canceled_bookings:Q", title="Số đơn hủy", format=","),
+                                alt.Tooltip("cancellation_rate_pct:Q", title="Tỷ lệ hủy (%)"),
+                            ],
+                        )
+                        .properties(height=260)
+                    )
+                    st.altair_chart(chart_dep, use_container_width=True)
+
+        with st.expander("Xem bảng dữ liệu chi tiết Grounded Context từ Data Warehouse (dds)", expanded=False):
             col_a, col_b = st.columns(2)
             with col_a:
                 st.markdown("**1. Xu hướng theo Năm (dim_date.year)**")
                 st.dataframe(pd.DataFrame(trends["yearly"]), use_container_width=True, hide_index=True)
                 st.markdown("**2. Phân rã theo Chính sách Đặt cọc (deposit_type)**")
-                st.dataframe(pd.DataFrame(diag["by_deposit_type"]), use_container_width=True, hide_index=True)
+                st.dataframe(df_deposit, use_container_width=True, hide_index=True)
             with col_b:
                 st.markdown("**3. Phân rã theo Nhóm Thời gian Đặt trước (lead_time_group)**")
-                st.dataframe(pd.DataFrame(diag["by_lead_time_group"]), use_container_width=True, hide_index=True)
+                st.dataframe(df_lead, use_container_width=True, hide_index=True)
                 st.markdown("**4. Phân rã theo Kênh bán (market_segment)**")
-                st.dataframe(pd.DataFrame(diag["by_market_segment"]), use_container_width=True, hide_index=True)
+                st.dataframe(df_segment, use_container_width=True, hide_index=True)
 
+        st.divider()
         left_col, right_col = st.columns(2, gap="large")
 
         with left_col:
@@ -350,13 +506,33 @@ with tab2:
 
     if "nl2sql_result" in st.session_state:
         res = st.session_state["nl2sql_result"]
+        df_res: pd.DataFrame = res["dataframe"]
+
         col_sql, col_df = st.columns([1, 1], gap="large")
         with col_sql:
             st.markdown("**1. Câu lệnh SQL đã thực thi (Read-only)**")
             st.code(res["sql"], language="sql")
         with col_df:
             st.markdown("**2. Bảng dữ liệu kết quả từ PostgreSQL Data Warehouse**")
-            st.dataframe(res["dataframe"], use_container_width=True, hide_index=True)
+            st.dataframe(df_res, use_container_width=True, hide_index=True)
+
+        if not df_res.empty and len(df_res.columns) >= 2:
+            cat_cols = [c for c in df_res.columns if df_res[c].dtype == "object" or "year" in c.lower()]
+            num_cols = [c for c in df_res.columns if pd.api.types.is_numeric_dtype(df_res[c]) and c not in cat_cols]
+            if cat_cols and num_cols:
+                with st.container(border=True):
+                    st.markdown(f"**Biểu đồ trực quan từ kết quả truy vấn ({num_cols[0]} theo {cat_cols[0]})**")
+                    auto_chart = (
+                        alt.Chart(df_res)
+                        .mark_bar(color="#1e3a8a")
+                        .encode(
+                            x=alt.X(f"{cat_cols[0]}:N", sort=None, title=cat_cols[0]),
+                            y=alt.Y(f"{num_cols[0]}:Q", title=num_cols[0]),
+                            tooltip=list(df_res.columns),
+                        )
+                        .properties(height=260)
+                    )
+                    st.altair_chart(auto_chart, use_container_width=True)
 
         st.markdown("**3. Giải thích & Nhận định từ AI**")
         with st.container(border=True):
@@ -379,8 +555,81 @@ with tab3:
         e5.metric("Avg Duration", f"{summary.get('avg_duration_seconds', 0)}s")
 
         st.write("")
-        st.markdown("**Bảng nhật ký chi tiết các lần chạy Pipeline (control.etl_batch_log)**")
         if logs:
+            df_logs = pd.DataFrame(logs).sort_values("run_id")
+            df_logs["rows_valid"] = pd.to_numeric(df_logs["rows_valid"])
+            df_logs["rows_rejected"] = pd.to_numeric(df_logs["rows_rejected"])
+            df_logs["duration_seconds"] = pd.to_numeric(df_logs["duration_seconds"])
+
+            etl_col1, etl_col2 = st.columns([2, 1], gap="medium")
+            with etl_col1:
+                with st.container(border=True):
+                    st.markdown("**1. Số dòng hợp lệ vs Bị loại và Thời gian chạy qua từng lần thực thi (run_id)**")
+                    etl_melted = df_logs.melt(
+                        id_vars=["run_id", "batch_file", "status"],
+                        value_vars=["rows_valid", "rows_rejected"],
+                        var_name="metric",
+                        value_name="row_count",
+                    )
+                    etl_melted["Loại bản ghi"] = etl_melted["metric"].map({
+                        "rows_valid": "Số dòng hợp lệ (Valid)",
+                        "rows_rejected": "Số dòng bị loại (Rejected)",
+                    })
+                    etl_bars = (
+                        alt.Chart(etl_melted)
+                        .mark_bar()
+                        .encode(
+                            x=alt.X("run_id:O", title="Mã lần chạy (run_id)"),
+                            y=alt.Y("row_count:Q", title="Số lượng bản ghi"),
+                            color=alt.Color(
+                                "Loại bản ghi:N",
+                                scale=alt.Scale(
+                                    domain=["Số dòng hợp lệ (Valid)", "Số dòng bị loại (Rejected)"],
+                                    range=["#16a34a", "#dc2626"],
+                                ),
+                                legend=alt.Legend(orient="top"),
+                            ),
+                            tooltip=["run_id", "batch_file", "status", "Loại bản ghi", alt.Tooltip("row_count:Q", format=",")],
+                        )
+                    )
+                    etl_line = (
+                        alt.Chart(df_logs)
+                        .mark_line(color="#d97706", strokeWidth=2.5, point=True)
+                        .encode(
+                            x=alt.X("run_id:O"),
+                            y=alt.Y("duration_seconds:Q", title="Thời gian thực thi (s)"),
+                            tooltip=["run_id", "batch_file", alt.Tooltip("duration_seconds:Q", title="Thời gian (s)")],
+                        )
+                    )
+                    st.altair_chart(
+                        alt.layer(etl_bars, etl_line).resolve_scale(y="independent").properties(height=260),
+                        use_container_width=True,
+                    )
+
+            with etl_col2:
+                with st.container(border=True):
+                    st.markdown("**2. Phân bổ trạng thái các lần chạy ETL**")
+                    status_counts = df_logs.groupby("status", as_index=False).agg(runs=("run_id", "count"))
+                    status_chart = (
+                        alt.Chart(status_counts)
+                        .mark_arc(innerRadius=50)
+                        .encode(
+                            theta=alt.Theta("runs:Q", title="Số lần chạy"),
+                            color=alt.Color(
+                                "status:N",
+                                scale=alt.Scale(
+                                    domain=["SUCCESS", "RETRY_SUCCESS", "WARNING", "FAILED"],
+                                    range=["#16a34a", "#2563eb", "#d97706", "#dc2626"],
+                                ),
+                                legend=alt.Legend(orient="top"),
+                            ),
+                            tooltip=["status", "runs"],
+                        )
+                        .properties(height=260)
+                    )
+                    st.altair_chart(status_chart, use_container_width=True)
+
+            st.markdown("**Bảng nhật ký chi tiết các lần chạy Pipeline (control.etl_batch_log)**")
             st.dataframe(pd.DataFrame(logs), use_container_width=True, hide_index=True)
         else:
             st.info("Bảng control.etl_batch_log hiện chưa có bản ghi nào.")
