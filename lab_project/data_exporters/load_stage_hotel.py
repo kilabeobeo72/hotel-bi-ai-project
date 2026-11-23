@@ -1,39 +1,72 @@
-from mage_ai.settings.repo import get_repo_path
+import os
+from datetime import datetime
+from os import path
+
 from mage_ai.io.config import ConfigFileLoader
 from mage_ai.io.postgres import Postgres
+from mage_ai.settings.repo import get_repo_path
 from pandas import DataFrame
-import os
-from os import path
-from datetime import datetime
+
+from lab_project.utils.etl_log import NO_NEW_BATCH, last_status_of, utcnow, write_log
 
 if 'data_exporter' not in globals():
     from mage_ai.data_preparation.decorators import data_exporter
 
 
+def _success_status(batch_file: str, rows_rejected: int) -> tuple:
+    """
+    Trả về (status, ghi chú) cho lần nạp thành công:
+      - có dòng bị loại                    => WARNING
+      - sạch, nhưng lần chạy trước của chính batch này là FAILED => RETRY_SUCCESS (chạy lại sau khi sửa lỗi)
+      - còn lại                            => SUCCESS
+    """
+    retried = last_status_of(batch_file) == 'FAILED'
+    if rows_rejected > 0:
+        return 'WARNING', ('Chạy lại sau lần FAILED trước. ' if retried else '') + f'Đã loại {rows_rejected} dòng lỗi giá trị.'
+    if retried:
+        return 'RETRY_SUCCESS', 'Chạy lại thành công sau lần FAILED trước đó.'
+    return 'SUCCESS', None
+
+
 @data_exporter
-def export_hotel_to_stage_and_log(df: DataFrame, **kwargs) -> None:
+def export_hotel_to_stage_and_log(df: DataFrame, **kwargs) -> dict:
     """
     Block 3 (Data Exporter):
-    1. Nạp dữ liệu vào bảng stage.raw_hotel_bookings (hỗ trợ cả FULL và INCREMENTAL load).
-    2. Ghi nhận trạng thái thực thi, số lượng bản ghi xử lý vào bảng control.etl_batch_log.
+    1. Nạp dữ liệu vào stage.raw_hotel_bookings (hỗ trợ cả FULL và INCREMENTAL load).
+    2. Ghi nhận trạng thái, số dòng xử lý và tổng thời gian chạy vào control.etl_batch_log.
+    3. Trả về dict tóm tắt cho block dbt phía sau (rows_loaded = 0 => dbt bỏ qua).
     """
+    # --- Không có batch mới (chế độ AUTO) ---
+    if len(df) == 0:
+        now = utcnow()
+        write_log(NO_NEW_BATCH, 'INCREMENTAL', 0, 0, 0, 'SUCCESS',
+                  'Không có batch mới trong data/ cần nạp.', now, now)
+        print('[load_stage_hotel] Không có batch mới, không nạp gì.')
+        return {'rows_loaded': 0, 'batch_file': NO_NEW_BATCH, 'load_mode': 'INCREMENTAL', 'status': 'SUCCESS'}
+
     config_path = path.join(get_repo_path(), 'io_config.yaml')
     config_profile = 'default'
 
-    load_mode = str(kwargs.get('load_mode') or 'FULL').strip().upper()
-    batch_file = os.path.basename(str(kwargs.get('batch_file') or 'batch_01_full_2015_2016.csv'))
+    batch_file = os.path.basename(str(df['batch_file'].iloc[0]))
+    load_mode = str(df['load_mode_meta'].iloc[0]).strip().upper() if 'load_mode_meta' in df.columns \
+        else str(kwargs.get('load_mode') or 'FULL').strip().upper()
     if load_mode not in ('FULL', 'INCREMENTAL'):
         raise ValueError(f"load_mode không hợp lệ: '{load_mode}' (chỉ nhận FULL hoặc INCREMENTAL).")
+
+    try:
+        run_started = datetime.fromisoformat(str(df['run_started_meta'].iloc[0]))
+    except Exception:
+        run_started = utcnow()
 
     rows_extracted = int(df['rows_extracted_meta'].iloc[0]) if 'rows_extracted_meta' in df.columns else len(df)
     rows_rejected = int(df['rows_rejected_meta'].iloc[0]) if 'rows_rejected_meta' in df.columns else 0
     rows_valid = len(df)
-    # Có dòng bị loại nhưng vẫn nạp được phần còn lại => WARNING (control.etl_batch_log cho phép giá trị này)
-    success_status = 'WARNING' if rows_rejected > 0 else 'SUCCESS'
 
-    export_df = df.drop(columns=['rows_extracted_meta', 'rows_rejected_meta'], errors='ignore')
+    export_df = df.drop(
+        columns=['rows_extracted_meta', 'rows_rejected_meta', 'load_mode_meta', 'run_started_meta'],
+        errors='ignore',
+    )
 
-    started_at = datetime.utcnow()
     with Postgres.with_config(ConfigFileLoader(config_path, config_profile)) as loader:
         try:
             if load_mode == 'FULL':
@@ -58,51 +91,13 @@ def export_hotel_to_stage_and_log(df: DataFrame, **kwargs) -> None:
                     unique_constraints=['record_hash'],
                     unique_conflict_method='UPDATE',
                 )
-            completed_at = datetime.utcnow()
-            duration = (completed_at - started_at).total_seconds()
-
-            # Ghi nhận kết quả thành công vào bảng control.etl_batch_log bằng câu lệnh INSERT chuẩn
-            with loader.conn.cursor() as cur:
-                cur.execute(
-                    """
-                    INSERT INTO control.etl_batch_log (
-                        pipeline_name, batch_file, load_mode,
-                        rows_extracted, rows_valid, rows_rejected,
-                        status, error_message, started_at, completed_at, duration_seconds
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-                    """,
-                    (
-                        'hotel_ingestion_pipeline', batch_file, load_mode,
-                        rows_extracted, rows_valid, rows_rejected,
-                        success_status, None, started_at, completed_at, round(duration, 2)
-                    )
-                )
-                loader.conn.commit()
-
         except Exception as exc:
-            try:
-                loader.conn.rollback()
-            except Exception:
-                pass
-            completed_at = datetime.utcnow()
-            duration = (completed_at - started_at).total_seconds()
-            try:
-                with loader.conn.cursor() as cur:
-                    cur.execute(
-                        """
-                        INSERT INTO control.etl_batch_log (
-                            pipeline_name, batch_file, load_mode,
-                            rows_extracted, rows_valid, rows_rejected,
-                            status, error_message, started_at, completed_at, duration_seconds
-                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-                        """,
-                        (
-                            'hotel_ingestion_pipeline', batch_file, load_mode,
-                            rows_extracted, 0, rows_extracted,
-                            'FAILED', str(exc)[:500], started_at, completed_at, round(duration, 2)
-                        )
-                    )
-                    loader.conn.commit()
-            except Exception:
-                pass
-            raise exc
+            write_log(batch_file, load_mode, rows_extracted, 0, rows_extracted, 'FAILED',
+                      str(exc), run_started)
+            raise
+
+    status, note = _success_status(batch_file, rows_rejected)
+    write_log(batch_file, load_mode, rows_extracted, rows_valid, rows_rejected, status, note, run_started)
+    print(f'[load_stage_hotel] {batch_file} | {load_mode} | đọc {rows_extracted:,} | nạp {rows_valid:,} | '
+          f'loại {rows_rejected:,} | {status}')
+    return {'rows_loaded': rows_valid, 'batch_file': batch_file, 'load_mode': load_mode, 'status': status}

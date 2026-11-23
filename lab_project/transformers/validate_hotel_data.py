@@ -1,6 +1,9 @@
 import os
+from datetime import datetime
 
 import pandas as pd
+
+from lab_project.utils.etl_log import utcnow, write_log
 
 if 'transformer' not in globals():
     from mage_ai.data_preparation.decorators import transformer
@@ -21,6 +24,17 @@ REQUIRED_COLUMNS = [
     'reservation_status', 'reservation_status_date',
 ]
 METADATA_COLUMNS = ['batch_file', 'ingested_at', 'record_hash', 'booking_uid']
+ORCHESTRATION_COLUMNS = ['load_mode_meta', 'run_started_meta']
+
+
+def _log_failed(df: pd.DataFrame, batch_file: str, message: str) -> None:
+    """Lỗi cấu trúc / không còn dòng hợp lệ xảy ra TRƯỚC block exporter => tự ghi FAILED vào control.etl_batch_log."""
+    load_mode = str(df['load_mode_meta'].iloc[0]) if 'load_mode_meta' in df.columns and len(df) else 'INCREMENTAL'
+    try:
+        started = datetime.fromisoformat(str(df['run_started_meta'].iloc[0]))
+    except Exception:
+        started = utcnow()
+    write_log(batch_file, load_mode, len(df), 0, len(df), 'FAILED', message, started)
 
 
 @transformer
@@ -38,6 +52,11 @@ def validate_hotel_data(data: pd.DataFrame, *args, **kwargs):
     Số dòng đọc / bị loại được truyền cho block sau qua cột rows_extracted_meta / rows_rejected_meta
     (block load_stage_hotel dùng để ghi control.etl_batch_log rồi bỏ hai cột này).
     """
+    if len(data) == 0:
+        # AUTO không có batch mới: bỏ qua kiểm tra, block exporter sẽ ghi nhận "không có batch mới".
+        print('[validate_hotel_data] Không có dữ liệu mới, bỏ qua.')
+        return data
+
     df = data.copy()
     batch_file = str(df['batch_file'].iloc[0]) if 'batch_file' in df.columns and len(df) else 'unknown'
     batch_stem = os.path.splitext(os.path.basename(batch_file))[0]
@@ -46,11 +65,13 @@ def validate_hotel_data(data: pd.DataFrame, *args, **kwargs):
     # 1. Kiểm tra cấu trúc
     missing = [c for c in REQUIRED_COLUMNS + METADATA_COLUMNS if c not in df.columns]
     if missing:
-        n_data_cols = len([c for c in df.columns if c not in METADATA_COLUMNS])
-        raise ValueError(
+        n_data_cols = len([c for c in df.columns if c not in METADATA_COLUMNS + ORCHESTRATION_COLUMNS])
+        message = (
             f'[validate_hotel_data] {batch_file}: thiếu cột bắt buộc {missing}. '
             f'File có {n_data_cols} cột dữ liệu, yêu cầu {len(REQUIRED_COLUMNS)} cột.'
         )
+        _log_failed(df, batch_file, message)
+        raise ValueError(message)
 
     # 2. Ép kiểu số (giá trị không chuyển được -> NaN và bị bắt ở bước 3)
     lead_time = pd.to_numeric(df['lead_time'], errors='coerce')
@@ -87,7 +108,9 @@ def validate_hotel_data(data: pd.DataFrame, *args, **kwargs):
           f'hợp lệ {len(valid):,} | loại {len(rejected):,}')
 
     if len(valid) == 0:
-        raise ValueError(f'[validate_hotel_data] {batch_file}: không còn dòng hợp lệ nào để nạp.')
+        message = f'[validate_hotel_data] {batch_file}: không còn dòng hợp lệ nào để nạp.'
+        _log_failed(df, batch_file, message)
+        raise ValueError(message)
 
     valid['rows_extracted_meta'] = rows_extracted
     valid['rows_rejected_meta'] = int(len(rejected))
@@ -96,7 +119,9 @@ def validate_hotel_data(data: pd.DataFrame, *args, **kwargs):
 
 @test
 def test_valid_data(output, *args) -> None:
-    assert output is not None and len(output) > 0, 'Không có dữ liệu hợp lệ'
+    assert output is not None, 'Output không được None'
+    if len(output) == 0:  # AUTO không có batch mới
+        return
     assert (output['adr'] >= 0).all(), 'ADR cannot be negative'
     assert output['is_canceled'].isin([0, 1]).all(), 'is_canceled phải thuộc {0, 1}'
     assert output['record_hash'].notna().all(), 'record_hash không được rỗng'

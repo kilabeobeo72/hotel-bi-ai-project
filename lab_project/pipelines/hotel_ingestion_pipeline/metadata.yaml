@@ -35,7 +35,8 @@ blocks:
 - all_upstream_blocks_executed: true
   color: null
   configuration: {}
-  downstream_blocks: []
+  downstream_blocks:
+  - run_dbt_build
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -48,13 +49,29 @@ blocks:
   upstream_blocks:
   - validate_hotel_data
   uuid: load_stage_hotel
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: run_dbt_build
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - load_stage_hotel
+  uuid: run_dbt_build
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
 conditionals: []
 created_at: '2026-10-23 00:00:00.000000+00:00'
 data_integration: null
-description: Ingestion du lieu Hotel Booking tu data/ vao PostgreSQL stage.raw_hotel_bookings
+description: Ingestion du lieu Hotel Booking tu data/ vao PostgreSQL stage.raw_hotel_bookings, sau do chay dbt run + dbt test cap nhat dds
 executor_config: {}
 executor_count: 1
 executor_type: null
@@ -71,7 +88,7 @@ tags: []
 type: python
 uuid: hotel_ingestion_pipeline
 variables:
-  batch_file: batch_02_inc_2017_H1.csv
-  load_mode: INCREMENTAL
+  batch_file: AUTO
+  load_mode: AUTO
 variables_dir: /home/src/mage_data/lab_project
 widgets: []

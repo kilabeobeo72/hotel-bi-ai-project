@@ -1,0 +1,34 @@
+triggers:
+- name: daily_hotel_incremental_schedule
+  schedule_type: time
+  schedule_interval: 0 2 * * *
+  start_time: 2026-11-23 02:00:00
+  status: active
+  variables:
+    batch_file: AUTO
+    load_mode: AUTO
+  settings:
+    skip_if_previous_running: true
+    allow_blocks_to_fail: false
+- name: demo_every_5_minutes_schedule
+  schedule_type: time
+  schedule_interval: '*/5 * * * *'
+  start_time: 2026-11-23 00:00:00
+  status: inactive
+  variables:
+    batch_file: AUTO
+    load_mode: AUTO
+  settings:
+    skip_if_previous_running: true
+    allow_blocks_to_fail: false
+- name: manual_rerun_with_params
+  schedule_type: time
+  schedule_interval: '@once'
+  start_time: 2026-11-23 00:00:00
+  status: inactive
+  variables:
+    batch_file: batch_03_inc_2017_H2.csv
+    load_mode: INCREMENTAL
+  settings:
+    skip_if_previous_running: false
+    allow_blocks_to_fail: false
