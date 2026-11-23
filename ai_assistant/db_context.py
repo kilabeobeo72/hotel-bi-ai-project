@@ -271,12 +271,12 @@ def fetch_etl_batch_logs(limit: int = 15) -> Dict[str, Any]:
     summary_sql = """
         SELECT
             COUNT(*) AS total_runs,
-            COALESCE(SUM(CASE WHEN status = 'SUCCESS' THEN 1 ELSE 0 END), 0) AS success_runs,
+            COALESCE(SUM(CASE WHEN status IN ('SUCCESS', 'RETRY_SUCCESS') THEN 1 ELSE 0 END), 0) AS success_runs,
             COALESCE(SUM(CASE WHEN status = 'WARNING' THEN 1 ELSE 0 END), 0) AS warning_runs,
             COALESCE(SUM(CASE WHEN status = 'FAILED' THEN 1 ELSE 0 END), 0) AS failed_runs,
             ROUND(
                 100.0 * COALESCE(
-                    AVG(CASE WHEN status IN ('SUCCESS', 'WARNING') THEN 1.0 ELSE 0.0 END),
+                    AVG(CASE WHEN status IN ('SUCCESS', 'WARNING', 'RETRY_SUCCESS') THEN 1.0 ELSE 0.0 END),
                     0
                 ),
                 2
@@ -289,7 +289,7 @@ def fetch_etl_batch_logs(limit: int = 15) -> Dict[str, Any]:
     """
     logs_sql = """
         SELECT
-            batch_id,
+            run_id,
             pipeline_name,
             batch_file,
             load_mode,
@@ -302,7 +302,7 @@ def fetch_etl_batch_logs(limit: int = 15) -> Dict[str, Any]:
             TO_CHAR(completed_at, 'YYYY-MM-DD HH24:MI:SS') AS completed_at,
             duration_seconds
         FROM control.etl_batch_log
-        ORDER BY batch_id DESC
+        ORDER BY run_id DESC
         LIMIT %s;
     """
     with get_db_connection() as conn:

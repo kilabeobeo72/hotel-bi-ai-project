@@ -44,7 +44,7 @@ CẤU TRÚC SCHEMA KHO DỮ LIỆU POSTGRESQL (`dw_lab`):
 4. Bảng `dds.dim_customer`: `customer_key` (TEXT), `country_code` (TEXT: 'PRT', 'GBR', 'FRA', 'ESP', 'DEU'...), `customer_type` ('Transient', 'Transient-Party', 'Contract', 'Group'), `is_repeated_guest` (INT: 0, 1), `guest_group_type` ('Solo', 'Couple', 'Family', 'Group')
 5. Bảng `dds.dim_channel`: `channel_key` (TEXT), `market_segment` ('Online TA', 'Offline TA/TO', 'Groups', 'Direct', 'Corporate', 'Complementary', 'Aviation'), `distribution_channel` ('TA/TO', 'Direct', 'Corporate', 'GDS'), `agent_code` (TEXT), `company_code` (TEXT)
 6. Bảng `dds.dim_room_policy`: `policy_key` (TEXT), `reserved_room_type` (TEXT), `assigned_room_type` (TEXT), `is_room_upgraded` (BOOLEAN), `meal_code` ('BB', 'HB', 'FB', 'SC'), `meal_description` (TEXT), `deposit_type` ('No Deposit', 'Non Refund', 'Refundable')
-7. Bảng `control.etl_batch_log`: `batch_id` (INT), `pipeline_name` (TEXT), `batch_file` (TEXT), `load_mode` ('FULL', 'INCREMENTAL'), `rows_extracted` (INT), `rows_valid` (INT), `rows_rejected` (INT), `status` ('SUCCESS', 'WARNING', 'FAILED'), `error_message` (TEXT), `started_at` (TIMESTAMP), `completed_at` (TIMESTAMP), `duration_seconds` (NUMERIC)
+7. Bảng `control.etl_batch_log`: `run_id` (INT), `pipeline_name` (TEXT), `batch_file` (TEXT), `load_mode` ('FULL', 'INCREMENTAL', 'DBT'), `rows_extracted` (INT), `rows_valid` (INT), `rows_rejected` (INT), `status` ('SUCCESS', 'RETRY_SUCCESS', 'WARNING', 'FAILED'), `error_message` (TEXT), `started_at` (TIMESTAMP), `completed_at` (TIMESTAMP), `duration_seconds` (NUMERIC)
 """
 
 
@@ -204,7 +204,7 @@ def inspect_etl_health(api_key: Optional[str] = None) -> str:
 
 Hãy phân tích sức khỏe hệ thống ETL (Mage.ai -> PostgreSQL `stage` -> dbt `dds`):
 1. **Đánh giá Tổng quan Vận hành**: Số lần chạy, tỷ lệ thành công, tổng lượng bản ghi đã xử lý và thời gian thực thi trung bình (`duration_seconds`).
-2. **Chẩn đoán Sự cố (`WARNING` / `FAILED`)**: Liệt kê chính xác `batch_id`, `batch_file`, `status`, số dòng bị từ chối (`rows_rejected`) và nội dung `error_message` (nếu có).
+2. **Chẩn đoán Sự cố (`WARNING` / `FAILED`)**: Liệt kê chính xác `run_id`, `batch_file`, `status`, số dòng bị từ chối (`rows_rejected`) và nội dung `error_message` (nếu có).
 3. **Hướng dẫn Khắc phục cho Kỹ sư DataOps**: Đề xuất bước xử lý cụ thể cho từng batch bị lỗi hoặc cảnh báo và cách chạy lại (re-run) pipeline trên Mage.ai.
 """
     return _call_gemini(prompt=prompt, api_key=api_key)
